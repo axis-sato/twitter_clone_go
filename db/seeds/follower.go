@@ -5,29 +5,46 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/bxcodec/faker/v3"
-	"github.com/mattn/go-gimei"
 	"github.com/volatiletech/sqlboiler/queries"
 )
 
-const userLength = 20
-
-func makeDummyUsers(ctx context.Context, db *sql.DB)  {
+func makeDummyFollowers(ctx context.Context, db *sql.DB)  {
 	v := ""
-	for i := userLength; i < l; i++ {
-		name := gimei.NewName().Kanji()
-		icon := faker.URL()
-		profile := fmt.Sprintf("こんにちは。%sと申します。\nよろしくお願いします。", name)
+	l := userLength / 2
+	for i := 0; i < l; i++ {
+		is, err := faker.RandomInt(1, userLength - 1)
 
-		v += fmt.Sprintf("('%s','%s','%s',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)", name, icon, profile)
+		if err != nil {
+			panic(err.Error())
+		}
 
-		if i == userLength - 1 {
-			v += ";"
-		} else {
-			v += ","
+		followerId := i + 1
+
+		fl := 10
+		j := 0
+		for _, fi := range is {
+
+			if fi == followerId {
+				continue
+			}
+
+			v += fmt.Sprintf("('%d','%d',CURRENT_TIMESTAMP)", followerId, fi)
+
+			if i == l - 1 && j == fl - 1 {
+				v += ";"
+			} else {
+				v += ","
+			}
+
+			if j == fl - 1 {
+				break
+			}
+
+			j++
 		}
 	}
 
-	if _, err := queries.Raw("INSERT INTO users (name, icon, profile, created_at, updated_at) VALUES " + v).ExecContext(ctx, db); err != nil {
+	if _, err := queries.Raw("INSERT INTO followers (follower_id, followee_id, created_at) VALUES " + v).ExecContext(ctx, db); err != nil {
 		panic(err.Error())
 	}
 }
