@@ -23,8 +23,8 @@ import (
 
 // Like is an object representing the database table.
 type Like struct {
-	TweetsID  uint      `boil:"tweets_id" json:"tweets_id" toml:"tweets_id" yaml:"tweets_id"`
-	UsersID   uint      `boil:"users_id" json:"users_id" toml:"users_id" yaml:"users_id"`
+	TweetID   uint      `boil:"tweet_id" json:"tweet_id" toml:"tweet_id" yaml:"tweet_id"`
+	UserID    uint      `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
 	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 
 	R *likeR `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -32,24 +32,24 @@ type Like struct {
 }
 
 var LikeColumns = struct {
-	TweetsID  string
-	UsersID   string
+	TweetID   string
+	UserID    string
 	CreatedAt string
 }{
-	TweetsID:  "tweets_id",
-	UsersID:   "users_id",
+	TweetID:   "tweet_id",
+	UserID:    "user_id",
 	CreatedAt: "created_at",
 }
 
 // Generated where
 
 var LikeWhere = struct {
-	TweetsID  whereHelperuint
-	UsersID   whereHelperuint
+	TweetID   whereHelperuint
+	UserID    whereHelperuint
 	CreatedAt whereHelpertime_Time
 }{
-	TweetsID:  whereHelperuint{field: "`likes`.`tweets_id`"},
-	UsersID:   whereHelperuint{field: "`likes`.`users_id`"},
+	TweetID:   whereHelperuint{field: "`likes`.`tweet_id`"},
+	UserID:    whereHelperuint{field: "`likes`.`user_id`"},
 	CreatedAt: whereHelpertime_Time{field: "`likes`.`created_at`"},
 }
 
@@ -77,10 +77,10 @@ func (*likeR) NewStruct() *likeR {
 type likeL struct{}
 
 var (
-	likeAllColumns            = []string{"tweets_id", "users_id", "created_at"}
-	likeColumnsWithoutDefault = []string{"tweets_id", "users_id", "created_at"}
+	likeAllColumns            = []string{"tweet_id", "user_id", "created_at"}
+	likeColumnsWithoutDefault = []string{"tweet_id", "user_id", "created_at"}
 	likeColumnsWithDefault    = []string{}
-	likePrimaryKeyColumns     = []string{"tweets_id", "users_id"}
+	likePrimaryKeyColumns     = []string{"tweet_id", "user_id"}
 )
 
 type (
@@ -361,7 +361,7 @@ func (q likeQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool,
 // Tweet pointed to by the foreign key.
 func (o *Like) Tweet(mods ...qm.QueryMod) tweetQuery {
 	queryMods := []qm.QueryMod{
-		qm.Where("`id` = ?", o.TweetsID),
+		qm.Where("`id` = ?", o.TweetID),
 	}
 
 	queryMods = append(queryMods, mods...)
@@ -375,7 +375,7 @@ func (o *Like) Tweet(mods ...qm.QueryMod) tweetQuery {
 // User pointed to by the foreign key.
 func (o *Like) User(mods ...qm.QueryMod) userQuery {
 	queryMods := []qm.QueryMod{
-		qm.Where("`id` = ?", o.UsersID),
+		qm.Where("`id` = ?", o.UserID),
 	}
 
 	queryMods = append(queryMods, mods...)
@@ -403,7 +403,7 @@ func (likeL) LoadTweet(ctx context.Context, e boil.ContextExecutor, singular boo
 		if object.R == nil {
 			object.R = &likeR{}
 		}
-		args = append(args, object.TweetsID)
+		args = append(args, object.TweetID)
 
 	} else {
 	Outer:
@@ -413,12 +413,12 @@ func (likeL) LoadTweet(ctx context.Context, e boil.ContextExecutor, singular boo
 			}
 
 			for _, a := range args {
-				if a == obj.TweetsID {
+				if a == obj.TweetID {
 					continue Outer
 				}
 			}
 
-			args = append(args, obj.TweetsID)
+			args = append(args, obj.TweetID)
 
 		}
 	}
@@ -473,7 +473,7 @@ func (likeL) LoadTweet(ctx context.Context, e boil.ContextExecutor, singular boo
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if local.TweetsID == foreign.ID {
+			if local.TweetID == foreign.ID {
 				local.R.Tweet = foreign
 				if foreign.R == nil {
 					foreign.R = &tweetR{}
@@ -504,7 +504,7 @@ func (likeL) LoadUser(ctx context.Context, e boil.ContextExecutor, singular bool
 		if object.R == nil {
 			object.R = &likeR{}
 		}
-		args = append(args, object.UsersID)
+		args = append(args, object.UserID)
 
 	} else {
 	Outer:
@@ -514,12 +514,12 @@ func (likeL) LoadUser(ctx context.Context, e boil.ContextExecutor, singular bool
 			}
 
 			for _, a := range args {
-				if a == obj.UsersID {
+				if a == obj.UserID {
 					continue Outer
 				}
 			}
 
-			args = append(args, obj.UsersID)
+			args = append(args, obj.UserID)
 
 		}
 	}
@@ -574,7 +574,7 @@ func (likeL) LoadUser(ctx context.Context, e boil.ContextExecutor, singular bool
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if local.UsersID == foreign.ID {
+			if local.UserID == foreign.ID {
 				local.R.User = foreign
 				if foreign.R == nil {
 					foreign.R = &userR{}
@@ -601,10 +601,10 @@ func (o *Like) SetTweet(ctx context.Context, exec boil.ContextExecutor, insert b
 
 	updateQuery := fmt.Sprintf(
 		"UPDATE `likes` SET %s WHERE %s",
-		strmangle.SetParamNames("`", "`", 0, []string{"tweets_id"}),
+		strmangle.SetParamNames("`", "`", 0, []string{"tweet_id"}),
 		strmangle.WhereClause("`", "`", 0, likePrimaryKeyColumns),
 	)
-	values := []interface{}{related.ID, o.TweetsID, o.UsersID}
+	values := []interface{}{related.ID, o.TweetID, o.UserID}
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -615,7 +615,7 @@ func (o *Like) SetTweet(ctx context.Context, exec boil.ContextExecutor, insert b
 		return errors.Wrap(err, "failed to update local table")
 	}
 
-	o.TweetsID = related.ID
+	o.TweetID = related.ID
 	if o.R == nil {
 		o.R = &likeR{
 			Tweet: related,
@@ -648,10 +648,10 @@ func (o *Like) SetUser(ctx context.Context, exec boil.ContextExecutor, insert bo
 
 	updateQuery := fmt.Sprintf(
 		"UPDATE `likes` SET %s WHERE %s",
-		strmangle.SetParamNames("`", "`", 0, []string{"users_id"}),
+		strmangle.SetParamNames("`", "`", 0, []string{"user_id"}),
 		strmangle.WhereClause("`", "`", 0, likePrimaryKeyColumns),
 	)
-	values := []interface{}{related.ID, o.TweetsID, o.UsersID}
+	values := []interface{}{related.ID, o.TweetID, o.UserID}
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -662,7 +662,7 @@ func (o *Like) SetUser(ctx context.Context, exec boil.ContextExecutor, insert bo
 		return errors.Wrap(err, "failed to update local table")
 	}
 
-	o.UsersID = related.ID
+	o.UserID = related.ID
 	if o.R == nil {
 		o.R = &likeR{
 			User: related,
@@ -690,7 +690,7 @@ func Likes(mods ...qm.QueryMod) likeQuery {
 
 // FindLike retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindLike(ctx context.Context, exec boil.ContextExecutor, tweetsID uint, usersID uint, selectCols ...string) (*Like, error) {
+func FindLike(ctx context.Context, exec boil.ContextExecutor, tweetID uint, userID uint, selectCols ...string) (*Like, error) {
 	likeObj := &Like{}
 
 	sel := "*"
@@ -698,10 +698,10 @@ func FindLike(ctx context.Context, exec boil.ContextExecutor, tweetsID uint, use
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from `likes` where `tweets_id`=? AND `users_id`=?", sel,
+		"select %s from `likes` where `tweet_id`=? AND `user_id`=?", sel,
 	)
 
-	q := queries.Raw(query, tweetsID, usersID)
+	q := queries.Raw(query, tweetID, userID)
 
 	err := q.Bind(ctx, exec, likeObj)
 	if err != nil {
@@ -793,8 +793,8 @@ func (o *Like) Insert(ctx context.Context, exec boil.ContextExecutor, columns bo
 	}
 
 	identifierCols = []interface{}{
-		o.TweetsID,
-		o.UsersID,
+		o.TweetID,
+		o.UserID,
 	}
 
 	if boil.IsDebug(ctx) {
@@ -1099,7 +1099,7 @@ func (o *Like) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, er
 	}
 
 	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), likePrimaryKeyMapping)
-	sql := "DELETE FROM `likes` WHERE `tweets_id`=? AND `users_id`=?"
+	sql := "DELETE FROM `likes` WHERE `tweet_id`=? AND `user_id`=?"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1196,7 +1196,7 @@ func (o LikeSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (in
 // Reload refetches the object from the database
 // using the primary keys with an executor.
 func (o *Like) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindLike(ctx, exec, o.TweetsID, o.UsersID)
+	ret, err := FindLike(ctx, exec, o.TweetID, o.UserID)
 	if err != nil {
 		return err
 	}
@@ -1235,16 +1235,16 @@ func (o *LikeSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) er
 }
 
 // LikeExists checks if the Like row exists.
-func LikeExists(ctx context.Context, exec boil.ContextExecutor, tweetsID uint, usersID uint) (bool, error) {
+func LikeExists(ctx context.Context, exec boil.ContextExecutor, tweetID uint, userID uint) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from `likes` where `tweets_id`=? AND `users_id`=? limit 1)"
+	sql := "select exists(select 1 from `likes` where `tweet_id`=? AND `user_id`=? limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
 		fmt.Fprintln(writer, sql)
-		fmt.Fprintln(writer, tweetsID, usersID)
+		fmt.Fprintln(writer, tweetID, userID)
 	}
-	row := exec.QueryRowContext(ctx, sql, tweetsID, usersID)
+	row := exec.QueryRowContext(ctx, sql, tweetID, userID)
 
 	err := row.Scan(&exists)
 	if err != nil {

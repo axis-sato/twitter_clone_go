@@ -435,7 +435,7 @@ func (o *User) Likes(mods ...qm.QueryMod) likeQuery {
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("`likes`.`users_id`=?", o.ID),
+		qm.Where("`likes`.`user_id`=?", o.ID),
 	)
 
 	query := Likes(queryMods...)
@@ -456,7 +456,7 @@ func (o *User) Tweets(mods ...qm.QueryMod) tweetQuery {
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("`tweets`.`users_id`=?", o.ID),
+		qm.Where("`tweets`.`user_id`=?", o.ID),
 	)
 
 	query := Tweets(queryMods...)
@@ -698,7 +698,7 @@ func (userL) LoadLikes(ctx context.Context, e boil.ContextExecutor, singular boo
 		return nil
 	}
 
-	query := NewQuery(qm.From(`likes`), qm.WhereIn(`likes.users_id in ?`, args...))
+	query := NewQuery(qm.From(`likes`), qm.WhereIn(`likes.user_id in ?`, args...))
 	if mods != nil {
 		mods.Apply(query)
 	}
@@ -740,7 +740,7 @@ func (userL) LoadLikes(ctx context.Context, e boil.ContextExecutor, singular boo
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if local.ID == foreign.UsersID {
+			if local.ID == foreign.UserID {
 				local.R.Likes = append(local.R.Likes, foreign)
 				if foreign.R == nil {
 					foreign.R = &likeR{}
@@ -793,7 +793,7 @@ func (userL) LoadTweets(ctx context.Context, e boil.ContextExecutor, singular bo
 		return nil
 	}
 
-	query := NewQuery(qm.From(`tweets`), qm.WhereIn(`tweets.users_id in ?`, args...))
+	query := NewQuery(qm.From(`tweets`), qm.WhereIn(`tweets.user_id in ?`, args...))
 	if mods != nil {
 		mods.Apply(query)
 	}
@@ -835,7 +835,7 @@ func (userL) LoadTweets(ctx context.Context, e boil.ContextExecutor, singular bo
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if local.ID == foreign.UsersID {
+			if local.ID == foreign.UserID {
 				local.R.Tweets = append(local.R.Tweets, foreign)
 				if foreign.R == nil {
 					foreign.R = &tweetR{}
@@ -963,17 +963,17 @@ func (o *User) AddLikes(ctx context.Context, exec boil.ContextExecutor, insert b
 	var err error
 	for _, rel := range related {
 		if insert {
-			rel.UsersID = o.ID
+			rel.UserID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
 		} else {
 			updateQuery := fmt.Sprintf(
 				"UPDATE `likes` SET %s WHERE %s",
-				strmangle.SetParamNames("`", "`", 0, []string{"users_id"}),
+				strmangle.SetParamNames("`", "`", 0, []string{"user_id"}),
 				strmangle.WhereClause("`", "`", 0, likePrimaryKeyColumns),
 			)
-			values := []interface{}{o.ID, rel.TweetsID, rel.UsersID}
+			values := []interface{}{o.ID, rel.TweetID, rel.UserID}
 
 			if boil.IsDebug(ctx) {
 				writer := boil.DebugWriterFrom(ctx)
@@ -984,7 +984,7 @@ func (o *User) AddLikes(ctx context.Context, exec boil.ContextExecutor, insert b
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			rel.UsersID = o.ID
+			rel.UserID = o.ID
 		}
 	}
 
@@ -1016,14 +1016,14 @@ func (o *User) AddTweets(ctx context.Context, exec boil.ContextExecutor, insert 
 	var err error
 	for _, rel := range related {
 		if insert {
-			rel.UsersID = o.ID
+			rel.UserID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
 		} else {
 			updateQuery := fmt.Sprintf(
 				"UPDATE `tweets` SET %s WHERE %s",
-				strmangle.SetParamNames("`", "`", 0, []string{"users_id"}),
+				strmangle.SetParamNames("`", "`", 0, []string{"user_id"}),
 				strmangle.WhereClause("`", "`", 0, tweetPrimaryKeyColumns),
 			)
 			values := []interface{}{o.ID, rel.ID}
@@ -1037,7 +1037,7 @@ func (o *User) AddTweets(ctx context.Context, exec boil.ContextExecutor, insert 
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			rel.UsersID = o.ID
+			rel.UserID = o.ID
 		}
 	}
 

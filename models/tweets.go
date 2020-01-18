@@ -25,10 +25,10 @@ import (
 // Tweet is an object representing the database table.
 type Tweet struct {
 	ID        uint      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	UsersID   uint      `boil:"users_id" json:"users_id" toml:"users_id" yaml:"users_id"`
+	UserID    uint      `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
 	Tweet     string    `boil:"tweet" json:"tweet" toml:"tweet" yaml:"tweet"`
 	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdateAt  time.Time `boil:"update_at" json:"update_at" toml:"update_at" yaml:"update_at"`
+	UpdatedAt time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at"`
 	DeletedAt null.Time `boil:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty"`
 
 	R *tweetR `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -37,17 +37,17 @@ type Tweet struct {
 
 var TweetColumns = struct {
 	ID        string
-	UsersID   string
+	UserID    string
 	Tweet     string
 	CreatedAt string
-	UpdateAt  string
+	UpdatedAt string
 	DeletedAt string
 }{
 	ID:        "id",
-	UsersID:   "users_id",
+	UserID:    "user_id",
 	Tweet:     "tweet",
 	CreatedAt: "created_at",
-	UpdateAt:  "update_at",
+	UpdatedAt: "updated_at",
 	DeletedAt: "deleted_at",
 }
 
@@ -71,17 +71,17 @@ func (w whereHelperstring) IN(slice []string) qm.QueryMod {
 
 var TweetWhere = struct {
 	ID        whereHelperuint
-	UsersID   whereHelperuint
+	UserID    whereHelperuint
 	Tweet     whereHelperstring
 	CreatedAt whereHelpertime_Time
-	UpdateAt  whereHelpertime_Time
+	UpdatedAt whereHelpertime_Time
 	DeletedAt whereHelpernull_Time
 }{
 	ID:        whereHelperuint{field: "`tweets`.`id`"},
-	UsersID:   whereHelperuint{field: "`tweets`.`users_id`"},
+	UserID:    whereHelperuint{field: "`tweets`.`user_id`"},
 	Tweet:     whereHelperstring{field: "`tweets`.`tweet`"},
 	CreatedAt: whereHelpertime_Time{field: "`tweets`.`created_at`"},
-	UpdateAt:  whereHelpertime_Time{field: "`tweets`.`update_at`"},
+	UpdatedAt: whereHelpertime_Time{field: "`tweets`.`updated_at`"},
 	DeletedAt: whereHelpernull_Time{field: "`tweets`.`deleted_at`"},
 }
 
@@ -109,8 +109,8 @@ func (*tweetR) NewStruct() *tweetR {
 type tweetL struct{}
 
 var (
-	tweetAllColumns            = []string{"id", "users_id", "tweet", "created_at", "update_at", "deleted_at"}
-	tweetColumnsWithoutDefault = []string{"users_id", "tweet", "created_at", "update_at", "deleted_at"}
+	tweetAllColumns            = []string{"id", "user_id", "tweet", "created_at", "updated_at", "deleted_at"}
+	tweetColumnsWithoutDefault = []string{"user_id", "tweet", "created_at", "updated_at", "deleted_at"}
 	tweetColumnsWithDefault    = []string{"id"}
 	tweetPrimaryKeyColumns     = []string{"id"}
 )
@@ -393,7 +393,7 @@ func (q tweetQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool
 // User pointed to by the foreign key.
 func (o *Tweet) User(mods ...qm.QueryMod) userQuery {
 	queryMods := []qm.QueryMod{
-		qm.Where("`id` = ?", o.UsersID),
+		qm.Where("`id` = ?", o.UserID),
 	}
 
 	queryMods = append(queryMods, mods...)
@@ -412,7 +412,7 @@ func (o *Tweet) Likes(mods ...qm.QueryMod) likeQuery {
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("`likes`.`tweets_id`=?", o.ID),
+		qm.Where("`likes`.`tweet_id`=?", o.ID),
 	)
 
 	query := Likes(queryMods...)
@@ -442,7 +442,7 @@ func (tweetL) LoadUser(ctx context.Context, e boil.ContextExecutor, singular boo
 		if object.R == nil {
 			object.R = &tweetR{}
 		}
-		args = append(args, object.UsersID)
+		args = append(args, object.UserID)
 
 	} else {
 	Outer:
@@ -452,12 +452,12 @@ func (tweetL) LoadUser(ctx context.Context, e boil.ContextExecutor, singular boo
 			}
 
 			for _, a := range args {
-				if a == obj.UsersID {
+				if a == obj.UserID {
 					continue Outer
 				}
 			}
 
-			args = append(args, obj.UsersID)
+			args = append(args, obj.UserID)
 
 		}
 	}
@@ -512,7 +512,7 @@ func (tweetL) LoadUser(ctx context.Context, e boil.ContextExecutor, singular boo
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if local.UsersID == foreign.ID {
+			if local.UserID == foreign.ID {
 				local.R.User = foreign
 				if foreign.R == nil {
 					foreign.R = &userR{}
@@ -565,7 +565,7 @@ func (tweetL) LoadLikes(ctx context.Context, e boil.ContextExecutor, singular bo
 		return nil
 	}
 
-	query := NewQuery(qm.From(`likes`), qm.WhereIn(`likes.tweets_id in ?`, args...))
+	query := NewQuery(qm.From(`likes`), qm.WhereIn(`likes.tweet_id in ?`, args...))
 	if mods != nil {
 		mods.Apply(query)
 	}
@@ -607,7 +607,7 @@ func (tweetL) LoadLikes(ctx context.Context, e boil.ContextExecutor, singular bo
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if local.ID == foreign.TweetsID {
+			if local.ID == foreign.TweetID {
 				local.R.Likes = append(local.R.Likes, foreign)
 				if foreign.R == nil {
 					foreign.R = &likeR{}
@@ -634,7 +634,7 @@ func (o *Tweet) SetUser(ctx context.Context, exec boil.ContextExecutor, insert b
 
 	updateQuery := fmt.Sprintf(
 		"UPDATE `tweets` SET %s WHERE %s",
-		strmangle.SetParamNames("`", "`", 0, []string{"users_id"}),
+		strmangle.SetParamNames("`", "`", 0, []string{"user_id"}),
 		strmangle.WhereClause("`", "`", 0, tweetPrimaryKeyColumns),
 	)
 	values := []interface{}{related.ID, o.ID}
@@ -648,7 +648,7 @@ func (o *Tweet) SetUser(ctx context.Context, exec boil.ContextExecutor, insert b
 		return errors.Wrap(err, "failed to update local table")
 	}
 
-	o.UsersID = related.ID
+	o.UserID = related.ID
 	if o.R == nil {
 		o.R = &tweetR{
 			User: related,
@@ -676,17 +676,17 @@ func (o *Tweet) AddLikes(ctx context.Context, exec boil.ContextExecutor, insert 
 	var err error
 	for _, rel := range related {
 		if insert {
-			rel.TweetsID = o.ID
+			rel.TweetID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
 		} else {
 			updateQuery := fmt.Sprintf(
 				"UPDATE `likes` SET %s WHERE %s",
-				strmangle.SetParamNames("`", "`", 0, []string{"tweets_id"}),
+				strmangle.SetParamNames("`", "`", 0, []string{"tweet_id"}),
 				strmangle.WhereClause("`", "`", 0, likePrimaryKeyColumns),
 			)
-			values := []interface{}{o.ID, rel.TweetsID, rel.UsersID}
+			values := []interface{}{o.ID, rel.TweetID, rel.UserID}
 
 			if boil.IsDebug(ctx) {
 				writer := boil.DebugWriterFrom(ctx)
@@ -697,7 +697,7 @@ func (o *Tweet) AddLikes(ctx context.Context, exec boil.ContextExecutor, insert 
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			rel.TweetsID = o.ID
+			rel.TweetID = o.ID
 		}
 	}
 
@@ -766,6 +766,9 @@ func (o *Tweet) Insert(ctx context.Context, exec boil.ContextExecutor, columns b
 
 		if o.CreatedAt.IsZero() {
 			o.CreatedAt = currTime
+		}
+		if o.UpdatedAt.IsZero() {
+			o.UpdatedAt = currTime
 		}
 	}
 
@@ -870,6 +873,12 @@ CacheNoHooks:
 // See boil.Columns.UpdateColumnSet documentation to understand column list inference for updates.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
 func (o *Tweet) Update(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		o.UpdatedAt = currTime
+	}
+
 	var err error
 	if err = o.doBeforeUpdateHooks(ctx, exec); err != nil {
 		return 0, err
@@ -1010,6 +1019,7 @@ func (o *Tweet) Upsert(ctx context.Context, exec boil.ContextExecutor, updateCol
 		if o.CreatedAt.IsZero() {
 			o.CreatedAt = currTime
 		}
+		o.UpdatedAt = currTime
 	}
 
 	if err := o.doBeforeUpsertHooks(ctx, exec); err != nil {
