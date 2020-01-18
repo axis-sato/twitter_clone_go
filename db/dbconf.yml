@@ -1,0 +1,3 @@
+development:
+  driver: mysql
+  open: twitter_clone:twitter_clone_password@tcp(localhost:3307)/twitter_clone?charset=utf8mb4&parseTime=True&loc=Local
