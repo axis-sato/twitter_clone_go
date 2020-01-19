@@ -4,10 +4,14 @@ import (
 	"context"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/spf13/viper"
 )
 
 func main() {
-	db, err := sql.Open("mysql", "twitter_clone:twitter_clone_password@tcp(localhost:3307)/twitter_clone?charset=utf8mb4&parseTime=True&loc=Local")
+
+	c := readDBConf()
+
+	db, err := sql.Open(c.Development.Driver, c.Development.Open)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -22,4 +26,30 @@ func main() {
 	makeDummyTweets(ctx, db)
 	makeDummyFollowers(ctx, db)
 	makeDummyLikes(ctx, db)
+}
+
+func readDBConf() *dbconf {
+	var c dbconf
+
+	viper.SetConfigName("dbconf")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("..")
+	viper.AddConfigPath("./db")
+	if err := viper.ReadInConfig(); err != nil {
+		panic(err.Error())
+	}
+
+	if err := viper.Unmarshal(&c); err != nil {
+		panic(err.Error())
+	}
+
+	return &c
+}
+
+type dbconf struct {
+	Development struct{
+		Driver string
+		Open string
+	}
 }
