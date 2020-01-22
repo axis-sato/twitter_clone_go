@@ -1,7 +1,7 @@
 [mysql]
   dbname  = "twitter_clone"
-  host    = "localhost"
-  port    = 3307
+  host    = "db"
+  port    = 3306
   user    = "twitter_clone"
   pass    = "twitter_clone_password"
   sslmode = "false"

@@ -1,0 +1,26 @@
+settings:
+  legacy:
+    force: false
+    interval: 0s
+schema:
+- name: app
+  path: .
+  commands:
+    install:
+      status: true
+      method: go build -o /go/app/dist/app
+    generate:
+      status: true
+    run:
+      status: true
+      method: /go/app/dist/app
+  watcher:
+    extensions:
+    - go
+    paths:
+    - /
+    ignore:
+      paths:
+      - .git
+      - .realize
+      - vendor
