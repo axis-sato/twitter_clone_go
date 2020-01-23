@@ -6,6 +6,7 @@ COPY . .
 
 RUN apk add --no-cache alpine-sdk \
     && go build -o dist/app \
+    && go get -u github.com/go-delve/delve/cmd/dlv \
     && go get gopkg.in/urfave/cli.v2@master \
     && go get github.com/oxequa/realize \
     && go get github.com/volatiletech/sqlboiler \
