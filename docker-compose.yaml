@@ -3,6 +3,7 @@ services:
   app:
     build:
       context: .
+      dockerfile: docker/go/Dockerfile
       target: build
     volumes:
       - ./:/go/app
@@ -20,7 +21,8 @@ services:
       - db
   db:
     build:
-      context: ./docker/mysql
+      context: .
+      dockerfile: docker/mysql/Dockerfile
     container_name: twitter_clone_db
     volumes:
       - db_data:/var/lib/mysql:cached
