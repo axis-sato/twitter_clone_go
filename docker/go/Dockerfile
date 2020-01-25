@@ -4,7 +4,9 @@ WORKDIR /go/app
 
 COPY . .
 
-RUN apk add --no-cache alpine-sdk \
+RUN set -ex \
+    && apk update \
+    && apk add --no-cache alpine-sdk \
     && go build -o api \
     && go get -u github.com/go-delve/delve/cmd/dlv \
     && go get gopkg.in/urfave/cli.v2@master \

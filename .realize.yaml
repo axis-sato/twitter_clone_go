@@ -8,7 +8,7 @@ schema:
   commands:
     install:
       status: true
-      method: go build -gcflags -o /go/app/api
+      method: go build -o /go/app/api
     generate:
       status: true
     run:
