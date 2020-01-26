@@ -2,6 +2,9 @@ package db
 
 import (
 	"database/sql"
+
+	"github.com/volatiletech/sqlboiler/boil"
+
 	"github.com/spf13/viper"
 )
 
@@ -17,6 +20,8 @@ func New() (*sql.DB, error) {
 	if err != nil {
 		return db, err
 	}
+
+	boil.DebugMode = true
 
 	return db, nil
 }
@@ -42,8 +47,8 @@ func readDBConf() (*dbconf, error) {
 }
 
 type dbconf struct {
-	Development struct{
+	Development struct {
 		Driver string
-		Open string
+		Open   string
 	}
 }
