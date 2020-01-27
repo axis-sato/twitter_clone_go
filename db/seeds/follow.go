@@ -4,15 +4,16 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	"github.com/bxcodec/faker/v3"
 	"github.com/volatiletech/sqlboiler/queries"
 )
 
-func makeDummyFollowers(ctx context.Context, db *sql.DB)  {
+func makeDummyFollows(ctx context.Context, db *sql.DB) {
 	v := ""
 	l := userLength / 2
 	for i := 0; i < l; i++ {
-		is, err := faker.RandomInt(1, userLength - 1)
+		is, err := faker.RandomInt(1, userLength-1)
 
 		if err != nil {
 			panic(err.Error())
@@ -30,13 +31,13 @@ func makeDummyFollowers(ctx context.Context, db *sql.DB)  {
 
 			v += fmt.Sprintf("('%d','%d',CURRENT_TIMESTAMP)", followerId, fi)
 
-			if i == l - 1 && j == fl - 1 {
+			if i == l-1 && j == fl-1 {
 				v += ";"
 			} else {
 				v += ","
 			}
 
-			if j == fl - 1 {
+			if j == fl-1 {
 				break
 			}
 
@@ -44,7 +45,7 @@ func makeDummyFollowers(ctx context.Context, db *sql.DB)  {
 		}
 	}
 
-	if _, err := queries.Raw("INSERT INTO followers (follower_id, followee_id, created_at) VALUES " + v).ExecContext(ctx, db); err != nil {
+	if _, err := queries.Raw("INSERT INTO follows (follower_id, followee_id, created_at) VALUES "+v).ExecContext(ctx, db); err != nil {
 		panic(err.Error())
 	}
 }

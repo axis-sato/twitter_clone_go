@@ -5,3 +5,7 @@
   user    = "twitter_clone"
   pass    = "twitter_clone_password"
   sslmode = "false"
+
+[aliases.tables.follows.relationships]
+fk_followers_users = {local = "Followers", foreign = "Follower"}
+fk_followees_users = {local = "Followees", foreign = "Followee"}

@@ -21,17 +21,17 @@ import (
 	"github.com/volatiletech/sqlboiler/strmangle"
 )
 
-// Follower is an object representing the database table.
-type Follower struct {
+// Follow is an object representing the database table.
+type Follow struct {
 	FollowerID uint      `boil:"follower_id" json:"follower_id" toml:"follower_id" yaml:"follower_id"`
 	FolloweeID uint      `boil:"followee_id" json:"followee_id" toml:"followee_id" yaml:"followee_id"`
 	CreatedAt  time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 
-	R *followerR `boil:"-" json:"-" toml:"-" yaml:"-"`
-	L followerL  `boil:"-" json:"-" toml:"-" yaml:"-"`
+	R *followR `boil:"-" json:"-" toml:"-" yaml:"-"`
+	L followL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
-var FollowerColumns = struct {
+var FollowColumns = struct {
 	FollowerID string
 	FolloweeID string
 	CreatedAt  string
@@ -73,69 +73,69 @@ func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
 
-var FollowerWhere = struct {
+var FollowWhere = struct {
 	FollowerID whereHelperuint
 	FolloweeID whereHelperuint
 	CreatedAt  whereHelpertime_Time
 }{
-	FollowerID: whereHelperuint{field: "`followers`.`follower_id`"},
-	FolloweeID: whereHelperuint{field: "`followers`.`followee_id`"},
-	CreatedAt:  whereHelpertime_Time{field: "`followers`.`created_at`"},
+	FollowerID: whereHelperuint{field: "`follows`.`follower_id`"},
+	FolloweeID: whereHelperuint{field: "`follows`.`followee_id`"},
+	CreatedAt:  whereHelpertime_Time{field: "`follows`.`created_at`"},
 }
 
-// FollowerRels is where relationship names are stored.
-var FollowerRels = struct {
-	Follower string
+// FollowRels is where relationship names are stored.
+var FollowRels = struct {
 	Followee string
+	Follower string
 }{
-	Follower: "Follower",
 	Followee: "Followee",
+	Follower: "Follower",
 }
 
-// followerR is where relationships are stored.
-type followerR struct {
-	Follower *User
+// followR is where relationships are stored.
+type followR struct {
 	Followee *User
+	Follower *User
 }
 
 // NewStruct creates a new relationship struct
-func (*followerR) NewStruct() *followerR {
-	return &followerR{}
+func (*followR) NewStruct() *followR {
+	return &followR{}
 }
 
-// followerL is where Load methods for each relationship are stored.
-type followerL struct{}
+// followL is where Load methods for each relationship are stored.
+type followL struct{}
 
 var (
-	followerAllColumns            = []string{"follower_id", "followee_id", "created_at"}
-	followerColumnsWithoutDefault = []string{"follower_id", "followee_id", "created_at"}
-	followerColumnsWithDefault    = []string{}
-	followerPrimaryKeyColumns     = []string{"follower_id", "followee_id"}
+	followAllColumns            = []string{"follower_id", "followee_id", "created_at"}
+	followColumnsWithoutDefault = []string{"follower_id", "followee_id", "created_at"}
+	followColumnsWithDefault    = []string{}
+	followPrimaryKeyColumns     = []string{"follower_id", "followee_id"}
 )
 
 type (
-	// FollowerSlice is an alias for a slice of pointers to Follower.
-	// This should generally be used opposed to []Follower.
-	FollowerSlice []*Follower
-	// FollowerHook is the signature for custom Follower hook methods
-	FollowerHook func(context.Context, boil.ContextExecutor, *Follower) error
+	// FollowSlice is an alias for a slice of pointers to Follow.
+	// This should generally be used opposed to []Follow.
+	FollowSlice []*Follow
+	// FollowHook is the signature for custom Follow hook methods
+	FollowHook func(context.Context, boil.ContextExecutor, *Follow) error
 
-	followerQuery struct {
+	followQuery struct {
 		*queries.Query
 	}
 )
 
 // Cache for insert, update and upsert
 var (
-	followerType                 = reflect.TypeOf(&Follower{})
-	followerMapping              = queries.MakeStructMapping(followerType)
-	followerPrimaryKeyMapping, _ = queries.BindMapping(followerType, followerMapping, followerPrimaryKeyColumns)
-	followerInsertCacheMut       sync.RWMutex
-	followerInsertCache          = make(map[string]insertCache)
-	followerUpdateCacheMut       sync.RWMutex
-	followerUpdateCache          = make(map[string]updateCache)
-	followerUpsertCacheMut       sync.RWMutex
-	followerUpsertCache          = make(map[string]insertCache)
+	followType                 = reflect.TypeOf(&Follow{})
+	followMapping              = queries.MakeStructMapping(followType)
+	followPrimaryKeyMapping, _ = queries.BindMapping(followType, followMapping, followPrimaryKeyColumns)
+	followInsertCacheMut       sync.RWMutex
+	followInsertCache          = make(map[string]insertCache)
+	followUpdateCacheMut       sync.RWMutex
+	followUpdateCache          = make(map[string]updateCache)
+	followUpsertCacheMut       sync.RWMutex
+	followUpsertCache          = make(map[string]insertCache)
 )
 
 var (
@@ -146,24 +146,24 @@ var (
 	_ = qmhelper.Where
 )
 
-var followerBeforeInsertHooks []FollowerHook
-var followerBeforeUpdateHooks []FollowerHook
-var followerBeforeDeleteHooks []FollowerHook
-var followerBeforeUpsertHooks []FollowerHook
+var followBeforeInsertHooks []FollowHook
+var followBeforeUpdateHooks []FollowHook
+var followBeforeDeleteHooks []FollowHook
+var followBeforeUpsertHooks []FollowHook
 
-var followerAfterInsertHooks []FollowerHook
-var followerAfterSelectHooks []FollowerHook
-var followerAfterUpdateHooks []FollowerHook
-var followerAfterDeleteHooks []FollowerHook
-var followerAfterUpsertHooks []FollowerHook
+var followAfterInsertHooks []FollowHook
+var followAfterSelectHooks []FollowHook
+var followAfterUpdateHooks []FollowHook
+var followAfterDeleteHooks []FollowHook
+var followAfterUpsertHooks []FollowHook
 
 // doBeforeInsertHooks executes all "before insert" hooks.
-func (o *Follower) doBeforeInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *Follow) doBeforeInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range followerBeforeInsertHooks {
+	for _, hook := range followBeforeInsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -173,12 +173,12 @@ func (o *Follower) doBeforeInsertHooks(ctx context.Context, exec boil.ContextExe
 }
 
 // doBeforeUpdateHooks executes all "before Update" hooks.
-func (o *Follower) doBeforeUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *Follow) doBeforeUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range followerBeforeUpdateHooks {
+	for _, hook := range followBeforeUpdateHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -188,12 +188,12 @@ func (o *Follower) doBeforeUpdateHooks(ctx context.Context, exec boil.ContextExe
 }
 
 // doBeforeDeleteHooks executes all "before Delete" hooks.
-func (o *Follower) doBeforeDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *Follow) doBeforeDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range followerBeforeDeleteHooks {
+	for _, hook := range followBeforeDeleteHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -203,12 +203,12 @@ func (o *Follower) doBeforeDeleteHooks(ctx context.Context, exec boil.ContextExe
 }
 
 // doBeforeUpsertHooks executes all "before Upsert" hooks.
-func (o *Follower) doBeforeUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *Follow) doBeforeUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range followerBeforeUpsertHooks {
+	for _, hook := range followBeforeUpsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -218,12 +218,12 @@ func (o *Follower) doBeforeUpsertHooks(ctx context.Context, exec boil.ContextExe
 }
 
 // doAfterInsertHooks executes all "after Insert" hooks.
-func (o *Follower) doAfterInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *Follow) doAfterInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range followerAfterInsertHooks {
+	for _, hook := range followAfterInsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -233,12 +233,12 @@ func (o *Follower) doAfterInsertHooks(ctx context.Context, exec boil.ContextExec
 }
 
 // doAfterSelectHooks executes all "after Select" hooks.
-func (o *Follower) doAfterSelectHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *Follow) doAfterSelectHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range followerAfterSelectHooks {
+	for _, hook := range followAfterSelectHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -248,12 +248,12 @@ func (o *Follower) doAfterSelectHooks(ctx context.Context, exec boil.ContextExec
 }
 
 // doAfterUpdateHooks executes all "after Update" hooks.
-func (o *Follower) doAfterUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *Follow) doAfterUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range followerAfterUpdateHooks {
+	for _, hook := range followAfterUpdateHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -263,12 +263,12 @@ func (o *Follower) doAfterUpdateHooks(ctx context.Context, exec boil.ContextExec
 }
 
 // doAfterDeleteHooks executes all "after Delete" hooks.
-func (o *Follower) doAfterDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *Follow) doAfterDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range followerAfterDeleteHooks {
+	for _, hook := range followAfterDeleteHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -278,12 +278,12 @@ func (o *Follower) doAfterDeleteHooks(ctx context.Context, exec boil.ContextExec
 }
 
 // doAfterUpsertHooks executes all "after Upsert" hooks.
-func (o *Follower) doAfterUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *Follow) doAfterUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range followerAfterUpsertHooks {
+	for _, hook := range followAfterUpsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -292,33 +292,33 @@ func (o *Follower) doAfterUpsertHooks(ctx context.Context, exec boil.ContextExec
 	return nil
 }
 
-// AddFollowerHook registers your hook function for all future operations.
-func AddFollowerHook(hookPoint boil.HookPoint, followerHook FollowerHook) {
+// AddFollowHook registers your hook function for all future operations.
+func AddFollowHook(hookPoint boil.HookPoint, followHook FollowHook) {
 	switch hookPoint {
 	case boil.BeforeInsertHook:
-		followerBeforeInsertHooks = append(followerBeforeInsertHooks, followerHook)
+		followBeforeInsertHooks = append(followBeforeInsertHooks, followHook)
 	case boil.BeforeUpdateHook:
-		followerBeforeUpdateHooks = append(followerBeforeUpdateHooks, followerHook)
+		followBeforeUpdateHooks = append(followBeforeUpdateHooks, followHook)
 	case boil.BeforeDeleteHook:
-		followerBeforeDeleteHooks = append(followerBeforeDeleteHooks, followerHook)
+		followBeforeDeleteHooks = append(followBeforeDeleteHooks, followHook)
 	case boil.BeforeUpsertHook:
-		followerBeforeUpsertHooks = append(followerBeforeUpsertHooks, followerHook)
+		followBeforeUpsertHooks = append(followBeforeUpsertHooks, followHook)
 	case boil.AfterInsertHook:
-		followerAfterInsertHooks = append(followerAfterInsertHooks, followerHook)
+		followAfterInsertHooks = append(followAfterInsertHooks, followHook)
 	case boil.AfterSelectHook:
-		followerAfterSelectHooks = append(followerAfterSelectHooks, followerHook)
+		followAfterSelectHooks = append(followAfterSelectHooks, followHook)
 	case boil.AfterUpdateHook:
-		followerAfterUpdateHooks = append(followerAfterUpdateHooks, followerHook)
+		followAfterUpdateHooks = append(followAfterUpdateHooks, followHook)
 	case boil.AfterDeleteHook:
-		followerAfterDeleteHooks = append(followerAfterDeleteHooks, followerHook)
+		followAfterDeleteHooks = append(followAfterDeleteHooks, followHook)
 	case boil.AfterUpsertHook:
-		followerAfterUpsertHooks = append(followerAfterUpsertHooks, followerHook)
+		followAfterUpsertHooks = append(followAfterUpsertHooks, followHook)
 	}
 }
 
-// One returns a single follower record from the query.
-func (q followerQuery) One(ctx context.Context, exec boil.ContextExecutor) (*Follower, error) {
-	o := &Follower{}
+// One returns a single follow record from the query.
+func (q followQuery) One(ctx context.Context, exec boil.ContextExecutor) (*Follow, error) {
+	o := &Follow{}
 
 	queries.SetLimit(q.Query, 1)
 
@@ -327,7 +327,7 @@ func (q followerQuery) One(ctx context.Context, exec boil.ContextExecutor) (*Fol
 		if errors.Cause(err) == sql.ErrNoRows {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "models: failed to execute a one query for followers")
+		return nil, errors.Wrap(err, "models: failed to execute a one query for follows")
 	}
 
 	if err := o.doAfterSelectHooks(ctx, exec); err != nil {
@@ -337,16 +337,16 @@ func (q followerQuery) One(ctx context.Context, exec boil.ContextExecutor) (*Fol
 	return o, nil
 }
 
-// All returns all Follower records from the query.
-func (q followerQuery) All(ctx context.Context, exec boil.ContextExecutor) (FollowerSlice, error) {
-	var o []*Follower
+// All returns all Follow records from the query.
+func (q followQuery) All(ctx context.Context, exec boil.ContextExecutor) (FollowSlice, error) {
+	var o []*Follow
 
 	err := q.Bind(ctx, exec, &o)
 	if err != nil {
-		return nil, errors.Wrap(err, "models: failed to assign all query results to Follower slice")
+		return nil, errors.Wrap(err, "models: failed to assign all query results to Follow slice")
 	}
 
-	if len(followerAfterSelectHooks) != 0 {
+	if len(followAfterSelectHooks) != 0 {
 		for _, obj := range o {
 			if err := obj.doAfterSelectHooks(ctx, exec); err != nil {
 				return o, err
@@ -357,8 +357,8 @@ func (q followerQuery) All(ctx context.Context, exec boil.ContextExecutor) (Foll
 	return o, nil
 }
 
-// Count returns the count of all Follower records in the query.
-func (q followerQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+// Count returns the count of all Follow records in the query.
+func (q followQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	var count int64
 
 	queries.SetSelect(q.Query, nil)
@@ -366,14 +366,14 @@ func (q followerQuery) Count(ctx context.Context, exec boil.ContextExecutor) (in
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to count followers rows")
+		return 0, errors.Wrap(err, "models: failed to count follows rows")
 	}
 
 	return count, nil
 }
 
 // Exists checks if the row exists in the table.
-func (q followerQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
+func (q followQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
 	var count int64
 
 	queries.SetSelect(q.Query, nil)
@@ -382,28 +382,14 @@ func (q followerQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (b
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return false, errors.Wrap(err, "models: failed to check if followers exists")
+		return false, errors.Wrap(err, "models: failed to check if follows exists")
 	}
 
 	return count > 0, nil
 }
 
-// Follower pointed to by the foreign key.
-func (o *Follower) Follower(mods ...qm.QueryMod) userQuery {
-	queryMods := []qm.QueryMod{
-		qm.Where("`id` = ?", o.FollowerID),
-	}
-
-	queryMods = append(queryMods, mods...)
-
-	query := Users(queryMods...)
-	queries.SetFrom(query.Query, "`users`")
-
-	return query
-}
-
 // Followee pointed to by the foreign key.
-func (o *Follower) Followee(mods ...qm.QueryMod) userQuery {
+func (o *Follow) Followee(mods ...qm.QueryMod) userQuery {
 	queryMods := []qm.QueryMod{
 		qm.Where("`id` = ?", o.FolloweeID),
 	}
@@ -416,123 +402,36 @@ func (o *Follower) Followee(mods ...qm.QueryMod) userQuery {
 	return query
 }
 
-// LoadFollower allows an eager lookup of values, cached into the
-// loaded structs of the objects. This is for an N-1 relationship.
-func (followerL) LoadFollower(ctx context.Context, e boil.ContextExecutor, singular bool, maybeFollower interface{}, mods queries.Applicator) error {
-	var slice []*Follower
-	var object *Follower
-
-	if singular {
-		object = maybeFollower.(*Follower)
-	} else {
-		slice = *maybeFollower.(*[]*Follower)
+// Follower pointed to by the foreign key.
+func (o *Follow) Follower(mods ...qm.QueryMod) userQuery {
+	queryMods := []qm.QueryMod{
+		qm.Where("`id` = ?", o.FollowerID),
 	}
 
-	args := make([]interface{}, 0, 1)
-	if singular {
-		if object.R == nil {
-			object.R = &followerR{}
-		}
-		args = append(args, object.FollowerID)
+	queryMods = append(queryMods, mods...)
 
-	} else {
-	Outer:
-		for _, obj := range slice {
-			if obj.R == nil {
-				obj.R = &followerR{}
-			}
+	query := Users(queryMods...)
+	queries.SetFrom(query.Query, "`users`")
 
-			for _, a := range args {
-				if a == obj.FollowerID {
-					continue Outer
-				}
-			}
-
-			args = append(args, obj.FollowerID)
-
-		}
-	}
-
-	if len(args) == 0 {
-		return nil
-	}
-
-	query := NewQuery(qm.From(`users`), qm.WhereIn(`users.id in ?`, args...))
-	if mods != nil {
-		mods.Apply(query)
-	}
-
-	results, err := query.QueryContext(ctx, e)
-	if err != nil {
-		return errors.Wrap(err, "failed to eager load User")
-	}
-
-	var resultSlice []*User
-	if err = queries.Bind(results, &resultSlice); err != nil {
-		return errors.Wrap(err, "failed to bind eager loaded slice User")
-	}
-
-	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results of eager load for users")
-	}
-	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for users")
-	}
-
-	if len(followerAfterSelectHooks) != 0 {
-		for _, obj := range resultSlice {
-			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
-				return err
-			}
-		}
-	}
-
-	if len(resultSlice) == 0 {
-		return nil
-	}
-
-	if singular {
-		foreign := resultSlice[0]
-		object.R.Follower = foreign
-		if foreign.R == nil {
-			foreign.R = &userR{}
-		}
-		foreign.R.FollowerFollowers = append(foreign.R.FollowerFollowers, object)
-		return nil
-	}
-
-	for _, local := range slice {
-		for _, foreign := range resultSlice {
-			if local.FollowerID == foreign.ID {
-				local.R.Follower = foreign
-				if foreign.R == nil {
-					foreign.R = &userR{}
-				}
-				foreign.R.FollowerFollowers = append(foreign.R.FollowerFollowers, local)
-				break
-			}
-		}
-	}
-
-	return nil
+	return query
 }
 
 // LoadFollowee allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for an N-1 relationship.
-func (followerL) LoadFollowee(ctx context.Context, e boil.ContextExecutor, singular bool, maybeFollower interface{}, mods queries.Applicator) error {
-	var slice []*Follower
-	var object *Follower
+func (followL) LoadFollowee(ctx context.Context, e boil.ContextExecutor, singular bool, maybeFollow interface{}, mods queries.Applicator) error {
+	var slice []*Follow
+	var object *Follow
 
 	if singular {
-		object = maybeFollower.(*Follower)
+		object = maybeFollow.(*Follow)
 	} else {
-		slice = *maybeFollower.(*[]*Follower)
+		slice = *maybeFollow.(*[]*Follow)
 	}
 
 	args := make([]interface{}, 0, 1)
 	if singular {
 		if object.R == nil {
-			object.R = &followerR{}
+			object.R = &followR{}
 		}
 		args = append(args, object.FolloweeID)
 
@@ -540,7 +439,7 @@ func (followerL) LoadFollowee(ctx context.Context, e boil.ContextExecutor, singu
 	Outer:
 		for _, obj := range slice {
 			if obj.R == nil {
-				obj.R = &followerR{}
+				obj.R = &followR{}
 			}
 
 			for _, a := range args {
@@ -580,7 +479,7 @@ func (followerL) LoadFollowee(ctx context.Context, e boil.ContextExecutor, singu
 		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for users")
 	}
 
-	if len(followerAfterSelectHooks) != 0 {
+	if len(followAfterSelectHooks) != 0 {
 		for _, obj := range resultSlice {
 			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
 				return err
@@ -598,7 +497,7 @@ func (followerL) LoadFollowee(ctx context.Context, e boil.ContextExecutor, singu
 		if foreign.R == nil {
 			foreign.R = &userR{}
 		}
-		foreign.R.FolloweeFollowers = append(foreign.R.FolloweeFollowers, object)
+		foreign.R.Followees = append(foreign.R.Followees, object)
 		return nil
 	}
 
@@ -609,7 +508,7 @@ func (followerL) LoadFollowee(ctx context.Context, e boil.ContextExecutor, singu
 				if foreign.R == nil {
 					foreign.R = &userR{}
 				}
-				foreign.R.FolloweeFollowers = append(foreign.R.FolloweeFollowers, local)
+				foreign.R.Followees = append(foreign.R.Followees, local)
 				break
 			}
 		}
@@ -618,57 +517,111 @@ func (followerL) LoadFollowee(ctx context.Context, e boil.ContextExecutor, singu
 	return nil
 }
 
-// SetFollower of the follower to the related item.
-// Sets o.R.Follower to related.
-// Adds o to related.R.FollowerFollowers.
-func (o *Follower) SetFollower(ctx context.Context, exec boil.ContextExecutor, insert bool, related *User) error {
-	var err error
-	if insert {
-		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
-			return errors.Wrap(err, "failed to insert into foreign table")
-		}
-	}
+// LoadFollower allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for an N-1 relationship.
+func (followL) LoadFollower(ctx context.Context, e boil.ContextExecutor, singular bool, maybeFollow interface{}, mods queries.Applicator) error {
+	var slice []*Follow
+	var object *Follow
 
-	updateQuery := fmt.Sprintf(
-		"UPDATE `followers` SET %s WHERE %s",
-		strmangle.SetParamNames("`", "`", 0, []string{"follower_id"}),
-		strmangle.WhereClause("`", "`", 0, followerPrimaryKeyColumns),
-	)
-	values := []interface{}{related.ID, o.FollowerID, o.FolloweeID}
-
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, updateQuery)
-		fmt.Fprintln(writer, values)
-	}
-	if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
-		return errors.Wrap(err, "failed to update local table")
-	}
-
-	o.FollowerID = related.ID
-	if o.R == nil {
-		o.R = &followerR{
-			Follower: related,
-		}
+	if singular {
+		object = maybeFollow.(*Follow)
 	} else {
-		o.R.Follower = related
+		slice = *maybeFollow.(*[]*Follow)
 	}
 
-	if related.R == nil {
-		related.R = &userR{
-			FollowerFollowers: FollowerSlice{o},
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &followR{}
 		}
+		args = append(args, object.FollowerID)
+
 	} else {
-		related.R.FollowerFollowers = append(related.R.FollowerFollowers, o)
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &followR{}
+			}
+
+			for _, a := range args {
+				if a == obj.FollowerID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.FollowerID)
+
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(qm.From(`users`), qm.WhereIn(`users.id in ?`, args...))
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load User")
+	}
+
+	var resultSlice []*User
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice User")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results of eager load for users")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for users")
+	}
+
+	if len(followAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+
+	if len(resultSlice) == 0 {
+		return nil
+	}
+
+	if singular {
+		foreign := resultSlice[0]
+		object.R.Follower = foreign
+		if foreign.R == nil {
+			foreign.R = &userR{}
+		}
+		foreign.R.Followers = append(foreign.R.Followers, object)
+		return nil
+	}
+
+	for _, local := range slice {
+		for _, foreign := range resultSlice {
+			if local.FollowerID == foreign.ID {
+				local.R.Follower = foreign
+				if foreign.R == nil {
+					foreign.R = &userR{}
+				}
+				foreign.R.Followers = append(foreign.R.Followers, local)
+				break
+			}
+		}
 	}
 
 	return nil
 }
 
-// SetFollowee of the follower to the related item.
+// SetFollowee of the follow to the related item.
 // Sets o.R.Followee to related.
-// Adds o to related.R.FolloweeFollowers.
-func (o *Follower) SetFollowee(ctx context.Context, exec boil.ContextExecutor, insert bool, related *User) error {
+// Adds o to related.R.Followees.
+func (o *Follow) SetFollowee(ctx context.Context, exec boil.ContextExecutor, insert bool, related *User) error {
 	var err error
 	if insert {
 		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
@@ -677,9 +630,9 @@ func (o *Follower) SetFollowee(ctx context.Context, exec boil.ContextExecutor, i
 	}
 
 	updateQuery := fmt.Sprintf(
-		"UPDATE `followers` SET %s WHERE %s",
+		"UPDATE `follows` SET %s WHERE %s",
 		strmangle.SetParamNames("`", "`", 0, []string{"followee_id"}),
-		strmangle.WhereClause("`", "`", 0, followerPrimaryKeyColumns),
+		strmangle.WhereClause("`", "`", 0, followPrimaryKeyColumns),
 	)
 	values := []interface{}{related.ID, o.FollowerID, o.FolloweeID}
 
@@ -694,7 +647,7 @@ func (o *Follower) SetFollowee(ctx context.Context, exec boil.ContextExecutor, i
 
 	o.FolloweeID = related.ID
 	if o.R == nil {
-		o.R = &followerR{
+		o.R = &followR{
 			Followee: related,
 		}
 	} else {
@@ -703,52 +656,99 @@ func (o *Follower) SetFollowee(ctx context.Context, exec boil.ContextExecutor, i
 
 	if related.R == nil {
 		related.R = &userR{
-			FolloweeFollowers: FollowerSlice{o},
+			Followees: FollowSlice{o},
 		}
 	} else {
-		related.R.FolloweeFollowers = append(related.R.FolloweeFollowers, o)
+		related.R.Followees = append(related.R.Followees, o)
 	}
 
 	return nil
 }
 
-// Followers retrieves all the records using an executor.
-func Followers(mods ...qm.QueryMod) followerQuery {
-	mods = append(mods, qm.From("`followers`"))
-	return followerQuery{NewQuery(mods...)}
+// SetFollower of the follow to the related item.
+// Sets o.R.Follower to related.
+// Adds o to related.R.Followers.
+func (o *Follow) SetFollower(ctx context.Context, exec boil.ContextExecutor, insert bool, related *User) error {
+	var err error
+	if insert {
+		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
+			return errors.Wrap(err, "failed to insert into foreign table")
+		}
+	}
+
+	updateQuery := fmt.Sprintf(
+		"UPDATE `follows` SET %s WHERE %s",
+		strmangle.SetParamNames("`", "`", 0, []string{"follower_id"}),
+		strmangle.WhereClause("`", "`", 0, followPrimaryKeyColumns),
+	)
+	values := []interface{}{related.ID, o.FollowerID, o.FolloweeID}
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, updateQuery)
+		fmt.Fprintln(writer, values)
+	}
+	if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+		return errors.Wrap(err, "failed to update local table")
+	}
+
+	o.FollowerID = related.ID
+	if o.R == nil {
+		o.R = &followR{
+			Follower: related,
+		}
+	} else {
+		o.R.Follower = related
+	}
+
+	if related.R == nil {
+		related.R = &userR{
+			Followers: FollowSlice{o},
+		}
+	} else {
+		related.R.Followers = append(related.R.Followers, o)
+	}
+
+	return nil
 }
 
-// FindFollower retrieves a single record by ID with an executor.
+// Follows retrieves all the records using an executor.
+func Follows(mods ...qm.QueryMod) followQuery {
+	mods = append(mods, qm.From("`follows`"))
+	return followQuery{NewQuery(mods...)}
+}
+
+// FindFollow retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindFollower(ctx context.Context, exec boil.ContextExecutor, followerID uint, followeeID uint, selectCols ...string) (*Follower, error) {
-	followerObj := &Follower{}
+func FindFollow(ctx context.Context, exec boil.ContextExecutor, followerID uint, followeeID uint, selectCols ...string) (*Follow, error) {
+	followObj := &Follow{}
 
 	sel := "*"
 	if len(selectCols) > 0 {
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from `followers` where `follower_id`=? AND `followee_id`=?", sel,
+		"select %s from `follows` where `follower_id`=? AND `followee_id`=?", sel,
 	)
 
 	q := queries.Raw(query, followerID, followeeID)
 
-	err := q.Bind(ctx, exec, followerObj)
+	err := q.Bind(ctx, exec, followObj)
 	if err != nil {
 		if errors.Cause(err) == sql.ErrNoRows {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "models: unable to select from followers")
+		return nil, errors.Wrap(err, "models: unable to select from follows")
 	}
 
-	return followerObj, nil
+	return followObj, nil
 }
 
 // Insert a single record using an executor.
 // See boil.Columns.InsertColumnSet documentation to understand column list inference for inserts.
-func (o *Follower) Insert(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
+func (o *Follow) Insert(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
 	if o == nil {
-		return errors.New("models: no followers provided for insertion")
+		return errors.New("models: no follows provided for insertion")
 	}
 
 	var err error
@@ -764,39 +764,39 @@ func (o *Follower) Insert(ctx context.Context, exec boil.ContextExecutor, column
 		return err
 	}
 
-	nzDefaults := queries.NonZeroDefaultSet(followerColumnsWithDefault, o)
+	nzDefaults := queries.NonZeroDefaultSet(followColumnsWithDefault, o)
 
 	key := makeCacheKey(columns, nzDefaults)
-	followerInsertCacheMut.RLock()
-	cache, cached := followerInsertCache[key]
-	followerInsertCacheMut.RUnlock()
+	followInsertCacheMut.RLock()
+	cache, cached := followInsertCache[key]
+	followInsertCacheMut.RUnlock()
 
 	if !cached {
 		wl, returnColumns := columns.InsertColumnSet(
-			followerAllColumns,
-			followerColumnsWithDefault,
-			followerColumnsWithoutDefault,
+			followAllColumns,
+			followColumnsWithDefault,
+			followColumnsWithoutDefault,
 			nzDefaults,
 		)
 
-		cache.valueMapping, err = queries.BindMapping(followerType, followerMapping, wl)
+		cache.valueMapping, err = queries.BindMapping(followType, followMapping, wl)
 		if err != nil {
 			return err
 		}
-		cache.retMapping, err = queries.BindMapping(followerType, followerMapping, returnColumns)
+		cache.retMapping, err = queries.BindMapping(followType, followMapping, returnColumns)
 		if err != nil {
 			return err
 		}
 		if len(wl) != 0 {
-			cache.query = fmt.Sprintf("INSERT INTO `followers` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
+			cache.query = fmt.Sprintf("INSERT INTO `follows` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
 		} else {
-			cache.query = "INSERT INTO `followers` () VALUES ()%s%s"
+			cache.query = "INSERT INTO `follows` () VALUES ()%s%s"
 		}
 
 		var queryOutput, queryReturning string
 
 		if len(cache.retMapping) != 0 {
-			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `followers` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, followerPrimaryKeyColumns))
+			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `follows` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, followPrimaryKeyColumns))
 		}
 
 		cache.query = fmt.Sprintf(cache.query, queryOutput, queryReturning)
@@ -813,7 +813,7 @@ func (o *Follower) Insert(ctx context.Context, exec boil.ContextExecutor, column
 	_, err = exec.ExecContext(ctx, cache.query, vals...)
 
 	if err != nil {
-		return errors.Wrap(err, "models: unable to insert into followers")
+		return errors.Wrap(err, "models: unable to insert into follows")
 	}
 
 	var identifierCols []interface{}
@@ -834,50 +834,50 @@ func (o *Follower) Insert(ctx context.Context, exec boil.ContextExecutor, column
 	}
 	err = exec.QueryRowContext(ctx, cache.retQuery, identifierCols...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
 	if err != nil {
-		return errors.Wrap(err, "models: unable to populate default values for followers")
+		return errors.Wrap(err, "models: unable to populate default values for follows")
 	}
 
 CacheNoHooks:
 	if !cached {
-		followerInsertCacheMut.Lock()
-		followerInsertCache[key] = cache
-		followerInsertCacheMut.Unlock()
+		followInsertCacheMut.Lock()
+		followInsertCache[key] = cache
+		followInsertCacheMut.Unlock()
 	}
 
 	return o.doAfterInsertHooks(ctx, exec)
 }
 
-// Update uses an executor to update the Follower.
+// Update uses an executor to update the Follow.
 // See boil.Columns.UpdateColumnSet documentation to understand column list inference for updates.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
-func (o *Follower) Update(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
+func (o *Follow) Update(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
 	var err error
 	if err = o.doBeforeUpdateHooks(ctx, exec); err != nil {
 		return 0, err
 	}
 	key := makeCacheKey(columns, nil)
-	followerUpdateCacheMut.RLock()
-	cache, cached := followerUpdateCache[key]
-	followerUpdateCacheMut.RUnlock()
+	followUpdateCacheMut.RLock()
+	cache, cached := followUpdateCache[key]
+	followUpdateCacheMut.RUnlock()
 
 	if !cached {
 		wl := columns.UpdateColumnSet(
-			followerAllColumns,
-			followerPrimaryKeyColumns,
+			followAllColumns,
+			followPrimaryKeyColumns,
 		)
 
 		if !columns.IsWhitelist() {
 			wl = strmangle.SetComplement(wl, []string{"created_at"})
 		}
 		if len(wl) == 0 {
-			return 0, errors.New("models: unable to update followers, could not build whitelist")
+			return 0, errors.New("models: unable to update follows, could not build whitelist")
 		}
 
-		cache.query = fmt.Sprintf("UPDATE `followers` SET %s WHERE %s",
+		cache.query = fmt.Sprintf("UPDATE `follows` SET %s WHERE %s",
 			strmangle.SetParamNames("`", "`", 0, wl),
-			strmangle.WhereClause("`", "`", 0, followerPrimaryKeyColumns),
+			strmangle.WhereClause("`", "`", 0, followPrimaryKeyColumns),
 		)
-		cache.valueMapping, err = queries.BindMapping(followerType, followerMapping, append(wl, followerPrimaryKeyColumns...))
+		cache.valueMapping, err = queries.BindMapping(followType, followMapping, append(wl, followPrimaryKeyColumns...))
 		if err != nil {
 			return 0, err
 		}
@@ -893,42 +893,42 @@ func (o *Follower) Update(ctx context.Context, exec boil.ContextExecutor, column
 	var result sql.Result
 	result, err = exec.ExecContext(ctx, cache.query, values...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to update followers row")
+		return 0, errors.Wrap(err, "models: unable to update follows row")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by update for followers")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by update for follows")
 	}
 
 	if !cached {
-		followerUpdateCacheMut.Lock()
-		followerUpdateCache[key] = cache
-		followerUpdateCacheMut.Unlock()
+		followUpdateCacheMut.Lock()
+		followUpdateCache[key] = cache
+		followUpdateCacheMut.Unlock()
 	}
 
 	return rowsAff, o.doAfterUpdateHooks(ctx, exec)
 }
 
 // UpdateAll updates all rows with the specified column values.
-func (q followerQuery) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
+func (q followQuery) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
 	queries.SetUpdate(q.Query, cols)
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to update all for followers")
+		return 0, errors.Wrap(err, "models: unable to update all for follows")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to retrieve rows affected for followers")
+		return 0, errors.Wrap(err, "models: unable to retrieve rows affected for follows")
 	}
 
 	return rowsAff, nil
 }
 
 // UpdateAll updates all rows with the specified column values, using an executor.
-func (o FollowerSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
+func (o FollowSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
 	ln := int64(len(o))
 	if ln == 0 {
 		return 0, nil
@@ -950,13 +950,13 @@ func (o FollowerSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor,
 
 	// Append all of the primary key values for each column
 	for _, obj := range o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), followerPrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), followPrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := fmt.Sprintf("UPDATE `followers` SET %s WHERE %s",
+	sql := fmt.Sprintf("UPDATE `follows` SET %s WHERE %s",
 		strmangle.SetParamNames("`", "`", 0, colNames),
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, followerPrimaryKeyColumns, len(o)))
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, followPrimaryKeyColumns, len(o)))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -965,23 +965,23 @@ func (o FollowerSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor,
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to update all in follower slice")
+		return 0, errors.Wrap(err, "models: unable to update all in follow slice")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to retrieve rows affected all in update all follower")
+		return 0, errors.Wrap(err, "models: unable to retrieve rows affected all in update all follow")
 	}
 	return rowsAff, nil
 }
 
-var mySQLFollowerUniqueColumns = []string{}
+var mySQLFollowUniqueColumns = []string{}
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *Follower) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
+func (o *Follow) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
-		return errors.New("models: no followers provided for upsert")
+		return errors.New("models: no follows provided for upsert")
 	}
 	if !boil.TimestampsAreSkipped(ctx) {
 		currTime := time.Now().In(boil.GetLocation())
@@ -995,8 +995,8 @@ func (o *Follower) Upsert(ctx context.Context, exec boil.ContextExecutor, update
 		return err
 	}
 
-	nzDefaults := queries.NonZeroDefaultSet(followerColumnsWithDefault, o)
-	nzUniques := queries.NonZeroDefaultSet(mySQLFollowerUniqueColumns, o)
+	nzDefaults := queries.NonZeroDefaultSet(followColumnsWithDefault, o)
+	nzUniques := queries.NonZeroDefaultSet(mySQLFollowUniqueColumns, o)
 
 	if len(nzUniques) == 0 {
 		return errors.New("cannot upsert with a table that cannot conflict on a unique column")
@@ -1024,42 +1024,42 @@ func (o *Follower) Upsert(ctx context.Context, exec boil.ContextExecutor, update
 	key := buf.String()
 	strmangle.PutBuffer(buf)
 
-	followerUpsertCacheMut.RLock()
-	cache, cached := followerUpsertCache[key]
-	followerUpsertCacheMut.RUnlock()
+	followUpsertCacheMut.RLock()
+	cache, cached := followUpsertCache[key]
+	followUpsertCacheMut.RUnlock()
 
 	var err error
 
 	if !cached {
 		insert, ret := insertColumns.InsertColumnSet(
-			followerAllColumns,
-			followerColumnsWithDefault,
-			followerColumnsWithoutDefault,
+			followAllColumns,
+			followColumnsWithDefault,
+			followColumnsWithoutDefault,
 			nzDefaults,
 		)
 		update := updateColumns.UpdateColumnSet(
-			followerAllColumns,
-			followerPrimaryKeyColumns,
+			followAllColumns,
+			followPrimaryKeyColumns,
 		)
 
 		if len(update) == 0 {
-			return errors.New("models: unable to upsert followers, could not build update column list")
+			return errors.New("models: unable to upsert follows, could not build update column list")
 		}
 
 		ret = strmangle.SetComplement(ret, nzUniques)
-		cache.query = buildUpsertQueryMySQL(dialect, "followers", update, insert)
+		cache.query = buildUpsertQueryMySQL(dialect, "follows", update, insert)
 		cache.retQuery = fmt.Sprintf(
-			"SELECT %s FROM `followers` WHERE %s",
+			"SELECT %s FROM `follows` WHERE %s",
 			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, ret), ","),
 			strmangle.WhereClause("`", "`", 0, nzUniques),
 		)
 
-		cache.valueMapping, err = queries.BindMapping(followerType, followerMapping, insert)
+		cache.valueMapping, err = queries.BindMapping(followType, followMapping, insert)
 		if err != nil {
 			return err
 		}
 		if len(ret) != 0 {
-			cache.retMapping, err = queries.BindMapping(followerType, followerMapping, ret)
+			cache.retMapping, err = queries.BindMapping(followType, followMapping, ret)
 			if err != nil {
 				return err
 			}
@@ -1081,7 +1081,7 @@ func (o *Follower) Upsert(ctx context.Context, exec boil.ContextExecutor, update
 	_, err = exec.ExecContext(ctx, cache.query, vals...)
 
 	if err != nil {
-		return errors.Wrap(err, "models: unable to upsert for followers")
+		return errors.Wrap(err, "models: unable to upsert for follows")
 	}
 
 	var uniqueMap []uint64
@@ -1091,9 +1091,9 @@ func (o *Follower) Upsert(ctx context.Context, exec boil.ContextExecutor, update
 		goto CacheNoHooks
 	}
 
-	uniqueMap, err = queries.BindMapping(followerType, followerMapping, nzUniques)
+	uniqueMap, err = queries.BindMapping(followType, followMapping, nzUniques)
 	if err != nil {
-		return errors.Wrap(err, "models: unable to retrieve unique values for followers")
+		return errors.Wrap(err, "models: unable to retrieve unique values for follows")
 	}
 	nzUniqueCols = queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), uniqueMap)
 
@@ -1104,32 +1104,32 @@ func (o *Follower) Upsert(ctx context.Context, exec boil.ContextExecutor, update
 	}
 	err = exec.QueryRowContext(ctx, cache.retQuery, nzUniqueCols...).Scan(returns...)
 	if err != nil {
-		return errors.Wrap(err, "models: unable to populate default values for followers")
+		return errors.Wrap(err, "models: unable to populate default values for follows")
 	}
 
 CacheNoHooks:
 	if !cached {
-		followerUpsertCacheMut.Lock()
-		followerUpsertCache[key] = cache
-		followerUpsertCacheMut.Unlock()
+		followUpsertCacheMut.Lock()
+		followUpsertCache[key] = cache
+		followUpsertCacheMut.Unlock()
 	}
 
 	return o.doAfterUpsertHooks(ctx, exec)
 }
 
-// Delete deletes a single Follower record with an executor.
+// Delete deletes a single Follow record with an executor.
 // Delete will match against the primary key column to find the record to delete.
-func (o *Follower) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (o *Follow) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if o == nil {
-		return 0, errors.New("models: no Follower provided for delete")
+		return 0, errors.New("models: no Follow provided for delete")
 	}
 
 	if err := o.doBeforeDeleteHooks(ctx, exec); err != nil {
 		return 0, err
 	}
 
-	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), followerPrimaryKeyMapping)
-	sql := "DELETE FROM `followers` WHERE `follower_id`=? AND `followee_id`=?"
+	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), followPrimaryKeyMapping)
+	sql := "DELETE FROM `follows` WHERE `follower_id`=? AND `followee_id`=?"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1138,12 +1138,12 @@ func (o *Follower) Delete(ctx context.Context, exec boil.ContextExecutor) (int64
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to delete from followers")
+		return 0, errors.Wrap(err, "models: unable to delete from follows")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by delete for followers")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by delete for follows")
 	}
 
 	if err := o.doAfterDeleteHooks(ctx, exec); err != nil {
@@ -1154,33 +1154,33 @@ func (o *Follower) Delete(ctx context.Context, exec boil.ContextExecutor) (int64
 }
 
 // DeleteAll deletes all matching rows.
-func (q followerQuery) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (q followQuery) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if q.Query == nil {
-		return 0, errors.New("models: no followerQuery provided for delete all")
+		return 0, errors.New("models: no followQuery provided for delete all")
 	}
 
 	queries.SetDelete(q.Query)
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to delete all from followers")
+		return 0, errors.Wrap(err, "models: unable to delete all from follows")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for followers")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for follows")
 	}
 
 	return rowsAff, nil
 }
 
 // DeleteAll deletes all rows in the slice, using an executor.
-func (o FollowerSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (o FollowSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if len(o) == 0 {
 		return 0, nil
 	}
 
-	if len(followerBeforeDeleteHooks) != 0 {
+	if len(followBeforeDeleteHooks) != 0 {
 		for _, obj := range o {
 			if err := obj.doBeforeDeleteHooks(ctx, exec); err != nil {
 				return 0, err
@@ -1190,12 +1190,12 @@ func (o FollowerSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor)
 
 	var args []interface{}
 	for _, obj := range o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), followerPrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), followPrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "DELETE FROM `followers` WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, followerPrimaryKeyColumns, len(o))
+	sql := "DELETE FROM `follows` WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, followPrimaryKeyColumns, len(o))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1204,15 +1204,15 @@ func (o FollowerSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor)
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to delete all from follower slice")
+		return 0, errors.Wrap(err, "models: unable to delete all from follow slice")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for followers")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for follows")
 	}
 
-	if len(followerAfterDeleteHooks) != 0 {
+	if len(followAfterDeleteHooks) != 0 {
 		for _, obj := range o {
 			if err := obj.doAfterDeleteHooks(ctx, exec); err != nil {
 				return 0, err
@@ -1225,8 +1225,8 @@ func (o FollowerSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor)
 
 // Reload refetches the object from the database
 // using the primary keys with an executor.
-func (o *Follower) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindFollower(ctx, exec, o.FollowerID, o.FolloweeID)
+func (o *Follow) Reload(ctx context.Context, exec boil.ContextExecutor) error {
+	ret, err := FindFollow(ctx, exec, o.FollowerID, o.FolloweeID)
 	if err != nil {
 		return err
 	}
@@ -1237,26 +1237,26 @@ func (o *Follower) Reload(ctx context.Context, exec boil.ContextExecutor) error 
 
 // ReloadAll refetches every row with matching primary key column values
 // and overwrites the original object slice with the newly updated slice.
-func (o *FollowerSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) error {
+func (o *FollowSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) error {
 	if o == nil || len(*o) == 0 {
 		return nil
 	}
 
-	slice := FollowerSlice{}
+	slice := FollowSlice{}
 	var args []interface{}
 	for _, obj := range *o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), followerPrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), followPrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "SELECT `followers`.* FROM `followers` WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, followerPrimaryKeyColumns, len(*o))
+	sql := "SELECT `follows`.* FROM `follows` WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, followPrimaryKeyColumns, len(*o))
 
 	q := queries.Raw(sql, args...)
 
 	err := q.Bind(ctx, exec, &slice)
 	if err != nil {
-		return errors.Wrap(err, "models: unable to reload all in FollowerSlice")
+		return errors.Wrap(err, "models: unable to reload all in FollowSlice")
 	}
 
 	*o = slice
@@ -1264,10 +1264,10 @@ func (o *FollowerSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor
 	return nil
 }
 
-// FollowerExists checks if the Follower row exists.
-func FollowerExists(ctx context.Context, exec boil.ContextExecutor, followerID uint, followeeID uint) (bool, error) {
+// FollowExists checks if the Follow row exists.
+func FollowExists(ctx context.Context, exec boil.ContextExecutor, followerID uint, followeeID uint) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from `followers` where `follower_id`=? AND `followee_id`=? limit 1)"
+	sql := "select exists(select 1 from `follows` where `follower_id`=? AND `followee_id`=? limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1278,7 +1278,7 @@ func FollowerExists(ctx context.Context, exec boil.ContextExecutor, followerID u
 
 	err := row.Scan(&exists)
 	if err != nil {
-		return false, errors.Wrap(err, "models: unable to check if followers exists")
+		return false, errors.Wrap(err, "models: unable to check if follows exists")
 	}
 
 	return exists, nil

@@ -2,27 +2,28 @@ package main
 
 import (
 	"context"
-	db2 "github.com/c8112002/twitter_clone_go/db"
+
+	"github.com/c8112002/twitter_clone_go/db"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
 
-	db, err := db2.New()
+	d, err := db.New(false)
 
 	if err != nil {
 		panic(err.Error())
 	}
 
 	defer func() {
-		if err := db.Close(); err != nil {
+		if err := d.Close(); err != nil {
 			panic(err.Error())
 		}
 	}()
 
 	ctx := context.Background()
-	makeDummyUsers(ctx, db)
-	makeDummyTweets(ctx, db)
-	makeDummyFollowers(ctx, db)
-	makeDummyLikes(ctx, db)
+	makeDummyUsers(ctx, d)
+	makeDummyTweets(ctx, d)
+	makeDummyFollows(ctx, d)
+	makeDummyLikes(ctx, d)
 }
