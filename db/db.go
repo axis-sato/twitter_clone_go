@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func New() (*sql.DB, error) {
+func New(debug bool) (*sql.DB, error) {
 	c, err := readDBConf()
 
 	if err != nil {
@@ -21,7 +21,7 @@ func New() (*sql.DB, error) {
 		return db, err
 	}
 
-	boil.DebugMode = true
+	boil.DebugMode = debug
 
 	return db, nil
 }
