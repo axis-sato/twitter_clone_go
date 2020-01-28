@@ -12,7 +12,8 @@ type userResponse struct {
 }
 
 type usersResponse struct {
-	Users []*userResponse `json:"users"`
+	Users             []*userResponse `json:"users"`
+	ContainsFirstUser bool            `json:"contains_first_user"`
 }
 
 func newUserResponse(u *entities.User, isFollower bool) *userResponse {

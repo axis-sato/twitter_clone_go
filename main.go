@@ -3,6 +3,7 @@ package main
 //go:generate sqlboiler --wipe --no-tests mysql
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/c8112002/twitter_clone_go/router"
@@ -29,7 +30,8 @@ func main() {
 
 	e := router.New()
 
-	us := store.NewUserStore(d)
+	ctx := context.Background()
+	us := store.NewUserStore(d, ctx)
 
 	h := handler.NewHandler(us)
 

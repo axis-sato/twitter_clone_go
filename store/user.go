@@ -12,16 +12,15 @@ import (
 )
 
 type UserStore struct {
-	db *sql.DB
+	db  *sql.DB
+	ctx context.Context
 }
 
-func NewUserStore(db *sql.DB) *UserStore {
-	return &UserStore{db: db}
+func NewUserStore(db *sql.DB, ctx context.Context) *UserStore {
+	return &UserStore{db: db, ctx: ctx}
 }
 
-func (us *UserStore) FetchUsers(lastID int, limit int) (entities.Users, error) {
-
-	ctx := context.Background()
+func (us *UserStore) FetchUsers(lastID int, limit int) (*entities.Users, error) {
 
 	ul, err := models.Users(
 		qm.Where("id <= ?", lastID),
@@ -30,37 +29,63 @@ func (us *UserStore) FetchUsers(lastID int, limit int) (entities.Users, error) {
 		qm.OrderBy(models.UserColumns.ID+" desc"),
 		qm.Load(qm.Rels(models.UserRels.Followers, models.FollowRels.Followee), qm.Where("deleted_at is null")),
 		qm.Load(qm.Rels(models.UserRels.Followees, models.FollowRels.Follower), qm.Where("deleted_at is null")),
-	).All(ctx, us.db)
+	).All(us.ctx, us.db)
 
 	users := entities.Users{}
 
 	for _, u := range ul {
-		followers := entities.Followers{}
-		followees := entities.Followees{}
-
-		frl := u.R.Followers
-		for _, f := range frl {
-			fu := f.R.Followee
-			if fu == nil {
-				continue
-			}
-			fr := entities.NewFollower(fu.ID, fu.Name, fu.Icon, fu.Profile)
-			followers = append(followers, fr)
-		}
-
-		fel := u.R.Followees
-		for _, f := range fel {
-			fu := f.R.Follower
-			if fu == nil {
-				continue
-			}
-			fe := entities.NewFollowee(fu.ID, fu.Name, fu.Icon, fu.Profile)
-			followees = append(followees, fe)
-		}
-
+		followers := us.createFollowersFrom(*u)
+		followees := us.createFolloweesFrom(*u)
 		user := entities.NewUser(u.ID, u.Name, u.Icon, u.Profile, followers, followees)
 		users = append(users, user)
 	}
 
-	return users, err
+	return &users, err
+}
+
+func (us *UserStore) FetchFirstUser() (*entities.User, error) {
+	u, err := models.Users(
+		qm.Where("deleted_at is null"),
+		qm.OrderBy(models.UserColumns.ID),
+		qm.Limit(1),
+		qm.Load(qm.Rels(models.UserRels.Followers, models.FollowRels.Followee), qm.Where("deleted_at is null")),
+		qm.Load(qm.Rels(models.UserRels.Followees, models.FollowRels.Follower), qm.Where("deleted_at is null")),
+	).One(us.ctx, us.db)
+
+	if err != nil {
+		return nil, err
+	}
+
+	followers := us.createFollowersFrom(*u)
+	followees := us.createFolloweesFrom(*u)
+
+	return entities.NewUser(u.ID, u.Name, u.Icon, u.Profile, followers, followees), err
+}
+
+func (us *UserStore) createFollowersFrom(u models.User) entities.Followers {
+	followers := entities.Followers{}
+	for _, f := range u.R.Followers {
+		fu := f.R.Followee
+		if fu == nil {
+			continue
+		}
+		fr := entities.NewFollower(fu.ID, fu.Name, fu.Icon, fu.Profile)
+		followers = append(followers, fr)
+	}
+
+	return followers
+}
+
+func (us *UserStore) createFolloweesFrom(u models.User) entities.Followees {
+	followees := entities.Followees{}
+	for _, f := range u.R.Followees {
+		fu := f.R.Follower
+		if fu == nil {
+			continue
+		}
+		fe := entities.NewFollowee(fu.ID, fu.Name, fu.Icon, fu.Profile)
+		followees = append(followees, fe)
+	}
+
+	return followees
 }
