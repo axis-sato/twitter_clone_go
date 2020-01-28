@@ -3,35 +3,38 @@ package main
 //go:generate sqlboiler --wipe --no-tests mysql
 
 import (
-	"net/http"
+	"fmt"
 
+	"github.com/c8112002/twitter_clone_go/router"
+
+	"github.com/c8112002/twitter_clone_go/db"
+	"github.com/c8112002/twitter_clone_go/handler"
+	"github.com/c8112002/twitter_clone_go/store"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/labstack/echo/v4"
 )
 
 func main() {
 
-	//db, err := db2.New()
-	//
-	//if err != nil {
-	//	fmt.Println(err.Error())
-	//}
-	//
-	//defer func() {
-	//	if err := db.Close(); err != nil {
-	//		fmt.Println(err.Error())
-	//	}
-	//}()
-	//
-	//if err := db.Ping(); err != nil {
-	//	fmt.Println(err.Error())
-	//}
+	d, err := db.New(true)
 
-	e := echo.New()
-	e.GET("/", users)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	defer func() {
+		if err := d.Close(); err != nil {
+			fmt.Println(err.Error())
+		}
+	}()
+
+	e := router.New()
+
+	us := store.NewUserStore(d)
+
+	h := handler.NewHandler(us)
+
+	v1 := e.Group("/api/v1")
+	h.Register(v1)
+
 	e.Logger.Fatal(e.Start(":1323"))
-}
-
-func users(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
 }
