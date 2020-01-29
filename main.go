@@ -32,8 +32,9 @@ func main() {
 
 	ctx := context.Background()
 	us := store.NewUserStore(d, ctx)
+	ts := store.NewTweetStore(d, ctx)
 
-	h := handler.NewHandler(us)
+	h := handler.NewHandler(us, ts)
 
 	v1 := e.Group("/api/v1")
 	h.Register(v1)

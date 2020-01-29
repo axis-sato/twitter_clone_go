@@ -34,9 +34,7 @@ func (us *UserStore) FetchUsers(lastID int, limit int) (*entities.Users, error) 
 	users := entities.Users{}
 
 	for _, u := range ul {
-		followers := us.createFollowersFrom(*u)
-		followees := us.createFolloweesFrom(*u)
-		user := entities.NewUser(u.ID, u.Name, u.Icon, u.Profile, followers, followees)
+		user := createUser(*u)
 		users = append(users, user)
 	}
 
@@ -56,36 +54,5 @@ func (us *UserStore) FetchFirstUser() (*entities.User, error) {
 		return nil, err
 	}
 
-	followers := us.createFollowersFrom(*u)
-	followees := us.createFolloweesFrom(*u)
-
-	return entities.NewUser(u.ID, u.Name, u.Icon, u.Profile, followers, followees), err
-}
-
-func (us *UserStore) createFollowersFrom(u models.User) entities.Followers {
-	followers := entities.Followers{}
-	for _, f := range u.R.Followers {
-		fu := f.R.Followee
-		if fu == nil {
-			continue
-		}
-		fr := entities.NewFollower(fu.ID, fu.Name, fu.Icon, fu.Profile)
-		followers = append(followers, fr)
-	}
-
-	return followers
-}
-
-func (us *UserStore) createFolloweesFrom(u models.User) entities.Followees {
-	followees := entities.Followees{}
-	for _, f := range u.R.Followees {
-		fu := f.R.Follower
-		if fu == nil {
-			continue
-		}
-		fe := entities.NewFollowee(fu.ID, fu.Name, fu.Icon, fu.Profile)
-		followees = append(followees, fe)
-	}
-
-	return followees
+	return createUser(*u), err
 }
