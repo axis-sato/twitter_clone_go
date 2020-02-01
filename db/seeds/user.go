@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/bxcodec/faker/v3"
 	"github.com/mattn/go-gimei"
 	"github.com/volatiletech/sqlboiler/queries"
 )
@@ -16,7 +15,7 @@ func makeDummyUsers(ctx context.Context, db *sql.DB) {
 	v := ""
 	for i := 0; i < userLength; i++ {
 		name := gimei.NewName().Kanji()
-		icon := faker.URL()
+		icon := "https://avatars2.githubusercontent.com/u/1905224?s=460&v=4"
 		profile := fmt.Sprintf("こんにちは。%sと申します。\nよろしくお願いします。", name)
 
 		v += fmt.Sprintf("('%s','%s','%s',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)", name, icon, profile)
