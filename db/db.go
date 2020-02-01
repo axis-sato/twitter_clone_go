@@ -2,13 +2,14 @@ package db
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/volatiletech/sqlboiler/boil"
 
 	"github.com/spf13/viper"
 )
 
-func New(debug bool) (*sql.DB, error) {
+func New(debug bool, loc *time.Location) (*sql.DB, error) {
 	c, err := readDBConf()
 
 	if err != nil {
@@ -22,6 +23,7 @@ func New(debug bool) (*sql.DB, error) {
 	}
 
 	boil.DebugMode = debug
+	boil.SetLocation(loc)
 
 	return db, nil
 }

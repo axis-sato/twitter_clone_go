@@ -5,6 +5,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/c8112002/twitter_clone_go/router"
 
@@ -15,8 +16,15 @@ import (
 )
 
 func main() {
+	loc, err := time.LoadLocation("Asia/Tokyo")
 
-	d, err := db.New(true)
+	time.Local = loc
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	d, err := db.New(true, loc)
 
 	if err != nil {
 		fmt.Println(err.Error())
