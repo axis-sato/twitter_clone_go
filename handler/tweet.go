@@ -11,17 +11,11 @@ import (
 )
 
 func (h *Handler) Tweets(c echo.Context) error {
-	lastID, err := strconv.Atoi(c.QueryParam("last_id"))
-	if err != nil {
-		lastID = math.MaxInt64
-	}
 
-	limit, err := strconv.Atoi(c.QueryParam("limit"))
-	if err != nil {
-		limit = 20
-	}
+	lid := lastID(c)
+	l := limit(c)
 
-	tweets, err := h.tweetStore.FetchTweets(lastID, limit)
+	tweets, err := h.tweetStore.FetchTweets(lid, l)
 	if err != nil {
 		c.Logger().Error("db error: " + err.Error())
 	}
@@ -41,6 +35,26 @@ func (h *Handler) Tweets(c echo.Context) error {
 	res.ContainsFirstTweet = containsFirstTweet(firstTweet, tweets)
 
 	return c.JSON(http.StatusOK, res)
+}
+
+func lastID(c echo.Context) int {
+	lid, err := strconv.Atoi(c.QueryParam("last_id"))
+	if err != nil {
+		return math.MaxInt32
+	}
+	return lid
+}
+
+func limit(c echo.Context) int {
+	l := c.QueryParam("limit")
+	if l == "" {
+		return math.MaxInt32
+	}
+	limit, err := strconv.Atoi(l)
+	if err != nil {
+		return math.MaxUint32
+	}
+	return limit
 }
 
 // tweetsにfirstTweetが含まれている場合trueを返す
