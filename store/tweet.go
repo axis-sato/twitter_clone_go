@@ -20,9 +20,10 @@ func NewTweetStore(db *sql.DB, ctx context.Context) *TweetStore {
 	return &TweetStore{db: db, ctx: ctx}
 }
 
-func (ts *TweetStore) FetchTweets(lastID int, limit int) (*entities.Tweets, error) {
+func (ts *TweetStore) FetchTweets(maxID int, minID int, limit int) (*entities.Tweets, error) {
 	tl, err := models.Tweets(
-		qm.Where("id <= ?", lastID),
+		qm.Where("id <= ?", maxID),
+		qm.Where("id >= ?", minID),
 		qm.Where("deleted_at is null"),
 		qm.OrderBy(models.TweetColumns.ID+" desc"),
 		qm.Limit(limit),

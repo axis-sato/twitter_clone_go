@@ -55,3 +55,10 @@ func newTweetResponse(t *entities.Tweet, isLiked bool) *tweetResponse {
 		IsLiked:   isLiked,
 	}
 }
+
+func newEmptyTweetsResponse() *tweetsResponse {
+	return &tweetsResponse{
+		Tweets:             []*tweetResponse{},
+		ContainsFirstTweet: false,
+	}
+}

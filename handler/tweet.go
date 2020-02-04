@@ -11,11 +11,9 @@ import (
 )
 
 func (h *Handler) Tweets(c echo.Context) error {
+	//time.Sleep(1 * time.Second)
+	tweets, err := h.tweetStore.FetchTweets(maxID(c), minID(c), limit(c))
 
-	lid := lastID(c)
-	l := limit(c)
-
-	tweets, err := h.tweetStore.FetchTweets(lid, l)
 	if err != nil {
 		c.Logger().Error("db error: " + err.Error())
 	}
@@ -26,7 +24,7 @@ func (h *Handler) Tweets(c echo.Context) error {
 		c.Logger().Error("db error: " + err.Error())
 	}
 
-	res := new(tweetsResponse)
+	res := newEmptyTweetsResponse()
 	for _, t := range *tweets {
 		tr := newTweetResponse(t, t.IsLikedBy(entities.LoginUserID))
 		res.Tweets = append(res.Tweets, tr)
@@ -37,12 +35,20 @@ func (h *Handler) Tweets(c echo.Context) error {
 	return c.JSON(http.StatusOK, res)
 }
 
-func lastID(c echo.Context) int {
-	lid, err := strconv.Atoi(c.QueryParam("last_id"))
+func maxID(c echo.Context) int {
+	mid, err := strconv.Atoi(c.QueryParam("max_id"))
 	if err != nil {
 		return math.MaxInt32
 	}
-	return lid
+	return mid
+}
+
+func minID(c echo.Context) int {
+	mid, err := strconv.Atoi(c.QueryParam("min_id"))
+	if err != nil {
+		return 1
+	}
+	return mid
 }
 
 func limit(c echo.Context) int {
