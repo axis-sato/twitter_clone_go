@@ -1,9 +1,7 @@
 package handler
 
 import (
-	"math"
 	"net/http"
-	"strconv"
 
 	"github.com/c8112002/twitter_clone_go/entities"
 
@@ -33,34 +31,6 @@ func (h *Handler) Tweets(c echo.Context) error {
 	res.ContainsFirstTweet = containsFirstTweet(firstTweet, tweets)
 
 	return c.JSON(http.StatusOK, res)
-}
-
-func maxID(c echo.Context) int {
-	mid, err := strconv.Atoi(c.QueryParam("max_id"))
-	if err != nil {
-		return math.MaxInt32
-	}
-	return mid
-}
-
-func minID(c echo.Context) int {
-	mid, err := strconv.Atoi(c.QueryParam("min_id"))
-	if err != nil {
-		return 1
-	}
-	return mid
-}
-
-func limit(c echo.Context) int {
-	l := c.QueryParam("limit")
-	if l == "" {
-		return math.MaxInt32
-	}
-	limit, err := strconv.Atoi(l)
-	if err != nil {
-		return math.MaxUint32
-	}
-	return limit
 }
 
 // tweetsにfirstTweetが含まれている場合trueを返す

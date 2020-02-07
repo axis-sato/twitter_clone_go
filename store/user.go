@@ -20,10 +20,11 @@ func NewUserStore(db *sql.DB, ctx context.Context) *UserStore {
 	return &UserStore{db: db, ctx: ctx}
 }
 
-func (us *UserStore) FetchUsers(lastID int, limit int) (*entities.Users, error) {
+func (us *UserStore) FetchUsers(maxID int, minID int, limit int) (*entities.Users, error) {
 
 	ul, err := models.Users(
-		qm.Where("id <= ?", lastID),
+		qm.Where("id <= ?", maxID),
+		qm.Where("id >= ?", minID),
 		qm.Where("deleted_at is null"),
 		qm.Limit(limit),
 		qm.OrderBy(models.UserColumns.ID+" desc"),
