@@ -31,6 +31,13 @@ func newUserResponse(u *entities.User, isFollower bool) *userResponse {
 	}
 }
 
+func newEmptyUsersResponse() *usersResponse {
+	return &usersResponse{
+		Users:             []*userResponse{},
+		ContainsFirstUser: false,
+	}
+}
+
 type tweetResponse struct {
 	ID        uint          `json:"id"`
 	Tweet     string        `json:"tweet"`

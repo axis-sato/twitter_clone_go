@@ -22,7 +22,7 @@ func (h *Handler) Users(c echo.Context) error {
 		c.Logger().Error("db error: " + err.Error())
 	}
 
-	res := new(usersResponse)
+	res := newEmptyUsersResponse()
 	for _, u := range *users {
 		ur := newUserResponse(u, u.IsFollowedBy(entities.LoginUserID))
 		res.Users = append(res.Users, ur)
