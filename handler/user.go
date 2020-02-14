@@ -2,13 +2,14 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/c8112002/twitter_clone_go/entities"
-
 	"github.com/labstack/echo/v4"
 )
 
 func (h *Handler) Users(c echo.Context) error {
+	time.Sleep(time.Second * 1)
 
 	users, err := h.userStore.FetchUsers(maxID(c), minID(c), limit(c))
 

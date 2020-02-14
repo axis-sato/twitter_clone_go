@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/volatiletech/sqlboiler/boil"
+
 	"github.com/volatiletech/sqlboiler/queries/qm"
 
 	"github.com/c8112002/twitter_clone_go/models"
@@ -59,4 +61,38 @@ func (ts *TweetStore) FetchFirstTweet() (*entities.Tweet, error) {
 	}
 
 	return createTweet(*t), nil
+}
+
+func (ts *TweetStore) findTweet(id uint) (*entities.Tweet, error) {
+	t, err := models.Tweets(
+		qm.Where("id=?", id),
+		qm.Limit(1),
+		qm.Load(qm.Rels(models.TweetRels.User, models.UserRels.Followers, models.FollowRels.Followee)),
+		qm.Load(qm.Rels(models.TweetRels.User, models.UserRels.Followees, models.FollowRels.Follower)),
+		qm.Load(qm.Rels(models.TweetRels.Likes, models.LikeRels.User, models.UserRels.Followers, models.FollowRels.Followee)),
+		qm.Load(qm.Rels(models.TweetRels.Likes, models.LikeRels.User, models.UserRels.Followees, models.FollowRels.Follower)),
+	).One(ts.ctx, ts.db)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return createTweet(*t), nil
+}
+
+func (ts *TweetStore) CreateTweet(tweet string, userID uint) (*entities.Tweet, error) {
+	var m models.Tweet
+	m.Tweet = tweet
+	m.UserID = userID
+	err := m.Insert(ts.ctx, ts.db, boil.Infer())
+	if err != nil {
+		return nil, err
+	}
+
+	t, err := ts.findTweet(m.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return t, nil
 }

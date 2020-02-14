@@ -33,6 +33,23 @@ func (h *Handler) Tweets(c echo.Context) error {
 	return c.JSON(http.StatusOK, res)
 }
 
+func (h *Handler) NewTweet(c echo.Context) error {
+	// TODO バリデーション
+	r := new(createTweetRequest)
+	if err := c.Bind(r); err != nil {
+		c.Logger().Error("request error: " + err.Error())
+	}
+
+	t, err := h.tweetStore.CreateTweet(r.Tweet, entities.LoginUserID)
+	if err != nil {
+		c.Logger().Error("db error: " + err.Error())
+	}
+
+	tr := newTweetResponse(t, t.IsLikedBy(entities.LoginUserID))
+
+	return c.JSON(http.StatusOK, tr)
+}
+
 // tweetsにfirstTweetが含まれている場合trueを返す
 func containsFirstTweet(firstTweet *entities.Tweet, tweets *entities.Tweets) bool {
 	for _, t := range *tweets {
