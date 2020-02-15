@@ -6,6 +6,7 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.4.0 // indirect
 	github.com/bxcodec/faker/v3 v3.2.0
 	github.com/friendsofgo/errors v0.9.2
+	github.com/go-playground/validator/v10 v10.2.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
 	github.com/jessevdk/go-assets v0.0.0-20160921144138-4f4301a06e15 // indirect
