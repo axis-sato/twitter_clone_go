@@ -34,10 +34,11 @@ func (h *Handler) Tweets(c echo.Context) error {
 }
 
 func (h *Handler) NewTweet(c echo.Context) error {
-	// TODO バリデーション
 	r := new(createTweetRequest)
-	if err := c.Bind(r); err != nil {
+	if err := r.bind(c); err != nil {
 		c.Logger().Error("request error: " + err.Error())
+		// TODO適切なエラーレスポンスを返す
+		return c.JSON(http.StatusBadRequest, "validation error")
 	}
 
 	t, err := h.tweetStore.CreateTweet(r.Tweet, entities.LoginUserID)

@@ -9,5 +9,6 @@ func New() *echo.Echo {
 	e := echo.New()
 	e.Debug = true
 	e.Use(middleware.Recover())
+	e.Validator = newValidator()
 	return e
 }
