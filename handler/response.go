@@ -3,6 +3,8 @@ package handler
 import (
 	"time"
 
+	"github.com/c8112002/twitter_clone_go/utils"
+
 	"github.com/c8112002/twitter_clone_go/entities"
 )
 
@@ -68,4 +70,12 @@ func newEmptyTweetsResponse() *tweetsResponse {
 		Tweets:             []*tweetResponse{},
 		ContainsFirstTweet: false,
 	}
+}
+
+type errorResponse struct {
+	Message string `json:"message"`
+}
+
+func NewErrorResponse(e utils.Error) *errorResponse {
+	return &errorResponse{Message: e.Error}
 }

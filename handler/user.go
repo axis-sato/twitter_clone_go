@@ -15,12 +15,14 @@ func (h *Handler) Users(c echo.Context) error {
 
 	if err != nil {
 		c.Logger().Error("db error: " + err.Error())
+		return err
 	}
 
 	firstUser, err := h.userStore.FetchFirstUser()
 
 	if err != nil {
 		c.Logger().Error("db error: " + err.Error())
+		return err
 	}
 
 	res := newEmptyUsersResponse()

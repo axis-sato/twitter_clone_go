@@ -14,12 +14,14 @@ func (h *Handler) Tweets(c echo.Context) error {
 
 	if err != nil {
 		c.Logger().Error("db error: " + err.Error())
+		return err
 	}
 
 	firstTweet, err := h.tweetStore.FetchFirstTweet()
 
 	if err != nil {
 		c.Logger().Error("db error: " + err.Error())
+		return err
 	}
 
 	res := newEmptyTweetsResponse()
@@ -37,13 +39,13 @@ func (h *Handler) NewTweet(c echo.Context) error {
 	r := new(createTweetRequest)
 	if err := r.bind(c); err != nil {
 		c.Logger().Error("request error: " + err.Error())
-		// TODO適切なエラーレスポンスを返す
-		return c.JSON(http.StatusBadRequest, "validation error")
+		return err
 	}
 
 	t, err := h.tweetStore.CreateTweet(r.Tweet, entities.LoginUserID)
 	if err != nil {
 		c.Logger().Error("db error: " + err.Error())
+		return err
 	}
 
 	tr := newTweetResponse(t, t.IsLikedBy(entities.LoginUserID))
