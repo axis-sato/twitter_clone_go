@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/c8112002/twitter_clone_go/utils"
@@ -70,8 +69,8 @@ func (h *Handler) Like(c echo.Context) error {
 	}
 
 	if t.IsLikedBy(entities.LoginUserID) {
-		c.Logger().Error("param error")
-		return &utils.InvalidParamError{Message: fmt.Sprintf("This tweet(id=%d) has been already liked by the login user.", id)}
+		tr := newTweetResponse(t, t.IsLikedBy(entities.LoginUserID))
+		return c.JSON(http.StatusOK, tr)
 	}
 
 	tweet, err := h.tweetStore.Like(t, entities.LoginUserID)
