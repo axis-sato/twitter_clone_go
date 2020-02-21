@@ -112,3 +112,16 @@ func (ts *TweetStore) Like(t *entities.Tweet, userID uint) (*entities.Tweet, err
 	}
 	return tweet, nil
 }
+
+func (ts *TweetStore) Unlike(t *entities.Tweet, userID uint) (*entities.Tweet, error) {
+	_, err := models.Likes(qm.Where(models.LikeColumns.UserID+"=?", userID), qm.Where(models.LikeColumns.TweetID+"=?", t.ID)).DeleteAll(ts.ctx, ts.db)
+	if err != nil {
+		return nil, err
+	}
+
+	tweet, err := ts.FindTweet(t.ID)
+	if err != nil {
+		return nil, err
+	}
+	return tweet, nil
+}

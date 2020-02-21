@@ -78,7 +78,34 @@ func (h *Handler) Like(c echo.Context) error {
 		c.Logger().Error("db error: " + err.Error())
 		return err
 	}
-	tr := newTweetResponse(tweet, t.IsLikedBy(entities.LoginUserID))
+	tr := newTweetResponse(tweet, tweet.IsLikedBy(entities.LoginUserID))
+	return c.JSON(http.StatusOK, tr)
+}
+
+func (h *Handler) Unlike(c echo.Context) error {
+	id, err := tweetID(c)
+	if err != nil {
+		c.Logger().Error("param error: " + err.Error())
+		return &utils.InvalidParamError{Message: "Invalid Tweet ID"}
+	}
+
+	t, err := h.tweetStore.FindTweet(id)
+	if err != nil {
+		c.Logger().Error("db error: " + err.Error())
+		return err
+	}
+
+	if !t.IsLikedBy(entities.LoginUserID) {
+		tr := newTweetResponse(t, t.IsLikedBy(entities.LoginUserID))
+		return c.JSON(http.StatusOK, tr)
+	}
+
+	tweet, err := h.tweetStore.Unlike(t, entities.LoginUserID)
+	if err != nil {
+		c.Logger().Error("db error: " + err.Error())
+		return err
+	}
+	tr := newTweetResponse(tweet, tweet.IsLikedBy(entities.LoginUserID))
 	return c.JSON(http.StatusOK, tr)
 }
 

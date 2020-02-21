@@ -10,4 +10,5 @@ func (h *Handler) Register(v1 *echo.Group) {
 	tweets.GET("", h.Tweets)
 	tweets.POST("", h.NewTweet)
 	tweets.PUT("/:id/like", h.Like)
+	tweets.PUT("/:id/unlike", h.Unlike)
 }
