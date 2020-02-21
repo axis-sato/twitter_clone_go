@@ -63,7 +63,7 @@ func (ts *TweetStore) FetchFirstTweet() (*entities.Tweet, error) {
 	return createTweet(*t), nil
 }
 
-func (ts *TweetStore) findTweet(id uint) (*entities.Tweet, error) {
+func (ts *TweetStore) FindTweet(id uint) (*entities.Tweet, error) {
 	t, err := models.Tweets(
 		qm.Where("id=?", id),
 		qm.Limit(1),
@@ -89,10 +89,26 @@ func (ts *TweetStore) CreateTweet(tweet string, userID uint) (*entities.Tweet, e
 		return nil, err
 	}
 
-	t, err := ts.findTweet(m.ID)
+	t, err := ts.FindTweet(m.ID)
 	if err != nil {
 		return nil, err
 	}
 
 	return t, nil
+}
+
+func (ts *TweetStore) Like(t *entities.Tweet, userID uint) (*entities.Tweet, error) {
+	var like models.Like
+	like.TweetID = t.ID
+	like.UserID = userID
+	err := like.Insert(ts.ctx, ts.db, boil.Infer())
+	if err != nil {
+		return nil, err
+	}
+
+	tweet, err := ts.FindTweet(t.ID)
+	if err != nil {
+		return nil, err
+	}
+	return tweet, nil
 }

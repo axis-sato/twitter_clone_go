@@ -1,7 +1,10 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
+
+	"github.com/c8112002/twitter_clone_go/utils"
 
 	"github.com/c8112002/twitter_clone_go/entities"
 
@@ -50,6 +53,33 @@ func (h *Handler) NewTweet(c echo.Context) error {
 
 	tr := newTweetResponse(t, t.IsLikedBy(entities.LoginUserID))
 
+	return c.JSON(http.StatusOK, tr)
+}
+
+func (h *Handler) Like(c echo.Context) error {
+	id, err := tweetID(c)
+	if err != nil {
+		c.Logger().Error("param error: " + err.Error())
+		return &utils.InvalidParamError{Message: "Invalid Tweet ID"}
+	}
+
+	t, err := h.tweetStore.FindTweet(id)
+	if err != nil {
+		c.Logger().Error("db error: " + err.Error())
+		return err
+	}
+
+	if t.IsLikedBy(entities.LoginUserID) {
+		c.Logger().Error("param error")
+		return &utils.InvalidParamError{Message: fmt.Sprintf("This tweet(id=%d) has been already liked by the login user.", id)}
+	}
+
+	tweet, err := h.tweetStore.Like(t, entities.LoginUserID)
+	if err != nil {
+		c.Logger().Error("db error: " + err.Error())
+		return err
+	}
+	tr := newTweetResponse(tweet, t.IsLikedBy(entities.LoginUserID))
 	return c.JSON(http.StatusOK, tr)
 }
 
