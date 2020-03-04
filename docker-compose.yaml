@@ -46,6 +46,26 @@ services:
       MYSQL_PASSWORD: twitter_clone_password
     networks:
       - backend
+  test_db:
+    build:
+      context: .
+      dockerfile: docker/mysql/Dockerfile
+    container_name: twitter_clone_test_db
+    command: [
+      '--default-authentication-plugin=mysql_native_password',
+      '--character-set-server=utf8mb4',
+      '--skip-character-set-client-handshake',
+      '--collation-server=utf8mb4_general_ci',
+    ]
+    ports:
+      - 3308:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: twitter_clone
+      MYSQL_USER: twitter_clone
+      MYSQL_PASSWORD: twitter_clone_password
+    networks:
+      - backend
 
 volumes:
   db_data:
