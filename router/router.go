@@ -10,6 +10,5 @@ func New() *echo.Echo {
 	e.Debug = true
 	e.Use(middleware.Recover())
 	e.Validator = newValidator()
-	e.HTTPErrorHandler = customHTTPErrorHandler
 	return e
 }

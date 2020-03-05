@@ -44,8 +44,7 @@ func main() {
 
 	h := handler.NewHandler(us, ts)
 
-	v1 := e.Group("/api/v1")
-	h.Register(v1)
+	h.Register(e)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

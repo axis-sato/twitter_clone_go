@@ -2,7 +2,12 @@ package handler
 
 import "github.com/labstack/echo/v4"
 
-func (h *Handler) Register(v1 *echo.Group) {
+func (h *Handler) Register(e *echo.Echo) {
+
+	e.HTTPErrorHandler = customHTTPErrorHandler
+
+	v1 := e.Group("/api/v1")
+
 	users := v1.Group("/users")
 	users.GET("", h.Users)
 
