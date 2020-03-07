@@ -1,5 +1,5 @@
 
--- +goose Up
+-- +migrate Up
 CREATE TABLE IF NOT EXISTS `likes` (
   `tweet_id` INT UNSIGNED NOT NULL,
   `user_id` INT UNSIGNED NOT NULL,
@@ -19,5 +19,5 @@ CREATE TABLE IF NOT EXISTS `likes` (
 );
 
 
--- +goose Down
+-- +migrate Down
 DROP TABLE `likes`;

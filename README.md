@@ -16,7 +16,7 @@ twitter_clone_go_app_1   realize start                    Up      0.0.0.0:1323->
 Run migrations.
 
 ```bash
-docker-compose exec app goose up
+docker-compose exec app sql-migrate up -config=db/dbconf.yml
 ```
 
 Run seeding.

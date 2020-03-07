@@ -1,3 +1,9 @@
 development:
-  driver: mysql
-  open: twitter_clone:twitter_clone_password@tcp(db:3306)/twitter_clone?charset=utf8mb4&parseTime=True&loc=Local
+  dialect: mysql
+  datasource: twitter_clone:twitter_clone_password@tcp(db:3306)/twitter_clone?charset=utf8mb4&parseTime=True&loc=Local
+  dir: db/migrations
+
+test:
+  dialect: mysql
+  datasource: twitter_clone:twitter_clone_password@tcp(test_db:3306)/twitter_clone?charset=utf8mb4&parseTime=True&loc=Local
+  dir: db/migrations

@@ -1,5 +1,5 @@
 
--- +goose Up
+-- +migrate Up
 CREATE TABLE IF NOT EXISTS `tweets` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` INT UNSIGNED NOT NULL,
@@ -17,5 +17,5 @@ CREATE TABLE IF NOT EXISTS `tweets` (
 );
 
 
--- +goose Down
+-- +migrate Down
 DROP TABLE `tweets`;

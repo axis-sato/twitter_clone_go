@@ -1,5 +1,5 @@
 
--- +goose Up
+-- +migrate Up
 CREATE TABLE IF NOT EXISTS `users` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
@@ -12,5 +12,5 @@ CREATE TABLE IF NOT EXISTS `users` (
 );
 
 
--- +goose Down
+-- +migrate Down
 DROP TABLE `users`;

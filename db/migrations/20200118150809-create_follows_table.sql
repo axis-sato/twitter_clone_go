@@ -1,5 +1,5 @@
 
--- +goose Up
+-- +migrate Up
 CREATE TABLE IF NOT EXISTS `follows` (
   `follower_id` INT UNSIGNED NOT NULL,
   `followee_id` INT UNSIGNED NOT NULL,
@@ -20,6 +20,6 @@ CREATE TABLE IF NOT EXISTS `follows` (
 );
 
 
--- +goose Down
+-- +migrate Down
 DROP TABLE `follows`;
 

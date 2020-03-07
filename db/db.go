@@ -16,7 +16,7 @@ func New(debug bool, loc *time.Location) (*sql.DB, error) {
 		return nil, err
 	}
 
-	db, err := sql.Open(c.Development.Driver, c.Development.Open)
+	db, err := sql.Open(c.Development.Dialect, c.Development.Datasource)
 
 	if err != nil {
 		return db, err
@@ -49,8 +49,12 @@ func readDBConf() (*dbconf, error) {
 }
 
 type dbconf struct {
-	Development struct {
-		Driver string
-		Open   string
-	}
+	Development param
+	Test        param
+}
+
+type param struct {
+	Dialect    string
+	Datasource string
+	Dir        string
 }

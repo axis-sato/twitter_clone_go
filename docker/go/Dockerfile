@@ -9,11 +9,11 @@ RUN set -ex \
     && apk add --no-cache alpine-sdk \
     && go build -o api \
     && go get -u github.com/go-delve/delve/cmd/dlv \
-    && go get gopkg.in/urfave/cli.v2@master \
-    && go get github.com/oxequa/realize \
+#    && go get github.com/urfave/cli/v2 \
+    && GO111MODULE=off go get github.com/oxequa/realize \
     && go get github.com/volatiletech/sqlboiler \
     && go get github.com/volatiletech/sqlboiler/drivers/sqlboiler-mysql \
-    && go get bitbucket.org/liamstask/goose/cmd/goose
+    && go get -v github.com/rubenv/sql-migrate/...
 
 
 FROM alpine
