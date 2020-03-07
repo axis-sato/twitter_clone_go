@@ -2,14 +2,16 @@ package main
 
 import (
 	"context"
+	"time"
 
 	"github.com/c8112002/twitter_clone_go/db"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-
-	d, err := db.New(false)
+	loc, err := time.LoadLocation("Asia/Tokyo")
+	time.Local = loc
+	d, err := db.New(false, loc)
 
 	if err != nil {
 		panic(err.Error())
