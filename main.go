@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/c8112002/twitter_clone_go/utils"
+
 	"github.com/c8112002/twitter_clone_go/router"
 
 	"github.com/c8112002/twitter_clone_go/db"
@@ -16,13 +18,8 @@ import (
 )
 
 func main() {
-	loc, err := time.LoadLocation("Asia/Tokyo")
-
+	loc := utils.Location()
 	time.Local = loc
-
-	if err != nil {
-		fmt.Println(err.Error())
-	}
 
 	d, err := db.New(true, loc)
 
