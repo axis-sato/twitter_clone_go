@@ -28,6 +28,25 @@ func New(debug bool, loc *time.Location) (*sql.DB, error) {
 	return db, nil
 }
 
+func TestDB(debug bool, loc *time.Location) (*sql.DB, error) {
+	c, err := readDBConf()
+
+	if err != nil {
+		return nil, err
+	}
+
+	db, err := sql.Open(c.Test.Dialect, c.Test.Datasource)
+
+	if err != nil {
+		return db, err
+	}
+
+	boil.DebugMode = debug
+	boil.SetLocation(loc)
+
+	return db, nil
+}
+
 func readDBConf() (*dbconf, error) {
 	var c dbconf
 
@@ -36,6 +55,7 @@ func readDBConf() (*dbconf, error) {
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("..")
 	viper.AddConfigPath("./db")
+	viper.AddConfigPath("../db")
 
 	if err := viper.ReadInConfig(); err != nil {
 		return &c, err

@@ -28,7 +28,7 @@ require (
 	github.com/mattn/go-oci8 v0.0.4 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/nakagami/firebirdsql v0.0.0-20200209020130-035d0abf81c8 // indirect
-	github.com/rubenv/sql-migrate v0.0.0-20200212082348-64f95ea68aa3 // indirect
+	github.com/rubenv/sql-migrate v0.0.0-20200212082348-64f95ea68aa3
 	github.com/shopspring/decimal v0.0.0-20200227202807-02e2044944cc // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect

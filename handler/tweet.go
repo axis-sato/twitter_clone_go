@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/c8112002/twitter_clone_go/utils"
 
@@ -11,7 +12,7 @@ import (
 )
 
 func (h *Handler) Tweets(c echo.Context) error {
-	//time.Sleep(1 * time.Second)
+	time.Sleep(1 * time.Second)
 	tweets, err := h.tweetStore.FetchTweets(maxID(c), minID(c), limit(c))
 
 	if err != nil {
