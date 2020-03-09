@@ -1,0 +1,37 @@
+{
+  "users": [
+    {
+      "id": 4,
+      "name": "高橋 四郎",
+      "icon": "https://icon/4",
+      "profile": "こんにちは。高橋四郎です。",
+      "is_follower": false,
+      "followee_count": 0
+    },
+    {
+      "id": 3,
+      "name": "田中 三郎",
+      "icon": "https://icon/3",
+      "profile": "こんにちは。田中三郎です。",
+      "is_follower": false,
+      "followee_count": 0
+    },
+    {
+      "id": 2,
+      "name": "佐藤 二郎",
+      "icon": "https://icon/2",
+      "profile": "こんにちは。佐藤二郎です。",
+      "is_follower": false,
+      "followee_count": 0
+    },
+    {
+      "id": 1,
+      "name": "鈴木 一郎",
+      "icon": "https://icon/1",
+      "profile": "こんにちは。鈴木一郎です。",
+      "is_follower": false,
+      "followee_count": 0
+    }
+  ],
+  "contains_first_user": true
+}

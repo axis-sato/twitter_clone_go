@@ -1,9 +1,23 @@
 package handler
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
+	"encoding/json"
+	"flag"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"testing"
 	"time"
+
+	"github.com/labstack/echo/v4"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/volatiletech/null"
 
@@ -18,11 +32,12 @@ import (
 )
 
 var (
-	h   *Handler
-	d   *sql.DB
-	us  *store.UserStore
-	ts  *store.TweetStore
-	ctx context.Context
+	h      *Handler
+	d      *sql.DB
+	us     *store.UserStore
+	ts     *store.TweetStore
+	ctx    context.Context
+	update = flag.Bool("update", false, "update .golden files")
 )
 
 func setup() {
@@ -57,6 +72,23 @@ func tearDown() {
 }
 
 func loadFixtures() error {
+	tx, err := d.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+
+	if err := loadUsers(tx); err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func loadUsers(tx *sql.Tx) error {
 	users := []models.User{
 		models.User{
 			Name:    "鈴木 一郎",
@@ -86,20 +118,93 @@ func loadFixtures() error {
 		},
 	}
 
-	tx, err := d.BeginTx(ctx, nil)
-	if err != nil {
-		return err
-	}
-
 	for _, u := range users {
 		if err := u.Insert(ctx, tx, boil.Infer()); err != nil {
 			return err
 		}
 	}
 
-	if err := tx.Commit(); err != nil {
-		return err
+	return nil
+}
+
+func newEchoContext(r *http.Request, w http.ResponseWriter) echo.Context {
+	e := echo.New()
+	return e.NewContext(r, w)
+}
+
+func newRequest(method, target string, body io.Reader) *http.Request {
+	req := httptest.NewRequest(method, target, body)
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	return req
+}
+
+func newContext(r *http.Request, w http.ResponseWriter) echo.Context {
+	e := echo.New()
+	return e.NewContext(r, w)
+}
+
+func assertResponse(t *testing.T, res *http.Response, code int, goldenFilePath string) {
+	t.Helper()
+
+	assertResponseHeader(t, res, code)
+	assertResponseBody(t, res, goldenFilePath)
+}
+
+func assertResponseHeader(t *testing.T, res *http.Response, code int) {
+	t.Helper()
+
+	if code != res.StatusCode {
+		t.Errorf("expected status code is '%d',\n but actual given code is '%d'", code, res.StatusCode)
 	}
 
-	return nil
+	if expected := "application/json; charset=UTF-8"; res.Header.Get("Content-Type") != expected {
+		t.Errorf("unexpected response Content-Type,\n expected: %#v,\n but given #%v", expected, res.Header.Get("Content-Type"))
+	}
+}
+
+func assertResponseBody(t *testing.T, res *http.Response, goldenFilePath string) {
+	t.Helper()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Fatalf("unexpected error by ioutil.ReadAll() '%#v'", err)
+	}
+
+	var actual bytes.Buffer
+	err = json.Indent(&actual, body, "", "  ")
+	if err != nil {
+		t.Fatalf("unexpected error by json.Indent '%#v'", err)
+	}
+
+	if *update {
+		updateGoldenFile(t, actual, goldenFilePath)
+	}
+
+	rs := getStringFromTestFile(t, goldenFilePath)
+
+	assert.JSONEq(t, rs, actual.String())
+}
+
+func getStringFromTestFile(t *testing.T, path string) string {
+	t.Helper()
+
+	bt, err := ioutil.ReadFile(path)
+	if err != nil {
+		t.Fatalf("unexpected error while opening file '%#v'", err)
+	}
+	return string(bt)
+}
+
+func updateGoldenFile(t *testing.T, actual bytes.Buffer, path string) {
+	t.Helper()
+
+	dir := filepath.Dir(path)
+	if err := os.MkdirAll(dir, 0744); err != nil {
+		t.Fatalf("failed to make the directory for golden file: %s", err)
+	}
+	if err := ioutil.WriteFile(path, actual.Bytes(), 0644); err != nil {
+		t.Fatalf("failed to update golden file: %s", err)
+	}
+
+	t.Log(path + " is updated.")
 }
