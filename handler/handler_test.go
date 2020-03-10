@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -72,23 +73,24 @@ func tearDown() {
 }
 
 func loadFixtures() error {
-	tx, err := d.BeginTx(ctx, nil)
-	if err != nil {
+
+	if err := loadUsers(); err != nil {
 		return err
 	}
 
-	if err := loadUsers(tx); err != nil {
-		return err
-	}
-
-	if err := tx.Commit(); err != nil {
+	if err := loadTweets(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func loadUsers(tx *sql.Tx) error {
+func loadUsers() error {
+	tx, err := d.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+
 	users := []models.User{
 		models.User{
 			Name:    "鈴木 一郎",
@@ -122,6 +124,47 @@ func loadUsers(tx *sql.Tx) error {
 		if err := u.Insert(ctx, tx, boil.Infer()); err != nil {
 			return err
 		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func loadTweets() error {
+	tx, err := d.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+
+	nt := 40
+	nu := 5
+
+	for i := 0; i < nt; i++ {
+		tid := i + 1
+
+		var deletedAt null.Time
+		if tid <= 30 {
+			deletedAt = null.NewTime(time.Now(), false)
+		} else {
+			deletedAt = null.NewTime(time.Now(), true)
+		}
+
+		t := models.Tweet{
+			UserID:    uint(i%nu + 1),
+			Tweet:     fmt.Sprintf("ツイート %d", tid),
+			DeletedAt: deletedAt,
+		}
+
+		if err := t.Insert(ctx, tx, boil.Infer()); err != nil {
+			return err
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
 	}
 
 	return nil
