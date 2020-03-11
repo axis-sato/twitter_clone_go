@@ -31,7 +31,7 @@ func TestUsers_ユーザ一覧が取得できること(t *testing.T) {
 			c := newEchoContext(req, rec)
 
 			assert.NoError(t, h.Users(c))
-			assertResponse(t, rec.Result(), 200, tc.goldenFilePath)
+			assertResponse(t, rec.Result(), http.StatusOK, tc.goldenFilePath)
 		})
 	}
 }

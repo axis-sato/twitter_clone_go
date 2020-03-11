@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTweets_ユーザ一覧が取得できること(t *testing.T) {
+func TestTweets_ツイート一覧が取得できること(t *testing.T) {
 	setup()
 	defer tearDown()
 
@@ -18,9 +18,9 @@ func TestTweets_ユーザ一覧が取得できること(t *testing.T) {
 		query          string
 		goldenFilePath string
 	}{
-		{name: "クエリなし", query: "", goldenFilePath: "./testdata/tweet/tweets.golden"},
-		{name: "limitで取得件数指定", query: "limit=2", goldenFilePath: "./testdata/tweet/tweets_with_limit.golden"},
-		{name: "min_idで取得する最小のユーザIDを指定", query: "min_id=28", goldenFilePath: "./testdata/tweet/tweets_with_min_id.golden"},
+		{name: "クエリなし", query: "", goldenFilePath: "./testdata/tweet/tweets/no_query.golden"},
+		{name: "limitで取得件数指定", query: "limit=2", goldenFilePath: "./testdata/tweet/tweets/limit.golden"},
+		{name: "min_idで取得する最小のユーザIDを指定", query: "min_id=28", goldenFilePath: "./testdata/tweet/tweets/min_id.golden"},
 	}
 
 	for _, tc := range testcases {
@@ -31,7 +31,7 @@ func TestTweets_ユーザ一覧が取得できること(t *testing.T) {
 			c := newEchoContext(req, rec)
 
 			assert.NoError(t, h.Tweets(c))
-			assertResponse(t, rec.Result(), 200, tc.goldenFilePath)
+			assertResponse(t, rec.Result(), http.StatusOK, tc.goldenFilePath)
 		})
 	}
 }

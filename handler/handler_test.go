@@ -16,6 +16,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/c8112002/twitter_clone_go/router"
+
 	"github.com/labstack/echo/v4"
 
 	"github.com/stretchr/testify/assert"
@@ -23,7 +25,6 @@ import (
 	"github.com/volatiletech/null"
 
 	"github.com/c8112002/twitter_clone_go/models"
-	"github.com/c8112002/twitter_clone_go/router"
 	"github.com/c8112002/twitter_clone_go/store"
 	"github.com/c8112002/twitter_clone_go/utils"
 	"github.com/volatiletech/sqlboiler/boil"
@@ -42,14 +43,14 @@ var (
 )
 
 func setup() {
+	utils.Freeze(time.Date(2020, 1, 1, 0, 0, 0, 0, time.Local))
+
 	var err error
 	d, err = db.TestDB(false, utils.Location())
 
 	if err != nil {
 		panic(err.Error())
 	}
-
-	_ = router.New()
 
 	ctx = context.Background()
 	us = store.NewUserStore(d, ctx)
@@ -93,29 +94,39 @@ func loadUsers() error {
 
 	users := []models.User{
 		models.User{
-			Name:    "鈴木 一郎",
-			Icon:    "https://icon/1",
-			Profile: "こんにちは。鈴木一郎です。",
+			Name:      "鈴木 一郎",
+			Icon:      "https://icon/1",
+			Profile:   "こんにちは。鈴木一郎です。",
+			CreatedAt: utils.Now(),
+			UpdatedAt: utils.Now(),
 		},
 		models.User{
-			Name:    "佐藤 二郎",
-			Icon:    "https://icon/2",
-			Profile: "こんにちは。佐藤二郎です。",
+			Name:      "佐藤 二郎",
+			Icon:      "https://icon/2",
+			Profile:   "こんにちは。佐藤二郎です。",
+			CreatedAt: utils.Now(),
+			UpdatedAt: utils.Now(),
 		},
 		models.User{
-			Name:    "田中 三郎",
-			Icon:    "https://icon/3",
-			Profile: "こんにちは。田中三郎です。",
+			Name:      "田中 三郎",
+			Icon:      "https://icon/3",
+			Profile:   "こんにちは。田中三郎です。",
+			CreatedAt: utils.Now(),
+			UpdatedAt: utils.Now(),
 		},
 		models.User{
-			Name:    "高橋 四郎",
-			Icon:    "https://icon/4",
-			Profile: "こんにちは。高橋四郎です。",
+			Name:      "高橋 四郎",
+			Icon:      "https://icon/4",
+			Profile:   "こんにちは。高橋四郎です。",
+			CreatedAt: utils.Now(),
+			UpdatedAt: utils.Now(),
 		},
 		models.User{
 			Name:      "橋本 五郎",
 			Icon:      "https://icon/5",
 			Profile:   "こんにちは。橋本五郎です。",
+			CreatedAt: utils.Now(),
+			UpdatedAt: utils.Now(),
 			DeletedAt: null.NewTime(time.Now(), true),
 		},
 	}
@@ -155,6 +166,8 @@ func loadTweets() error {
 		t := models.Tweet{
 			UserID:    uint(i%nu + 1),
 			Tweet:     fmt.Sprintf("ツイート %d", tid),
+			CreatedAt: utils.Now(),
+			UpdatedAt: utils.Now(),
 			DeletedAt: deletedAt,
 		}
 
@@ -171,7 +184,7 @@ func loadTweets() error {
 }
 
 func newEchoContext(r *http.Request, w http.ResponseWriter) echo.Context {
-	e := echo.New()
+	e := router.New()
 	return e.NewContext(r, w)
 }
 
@@ -179,11 +192,6 @@ func newRequest(method, target string, body io.Reader) *http.Request {
 	req := httptest.NewRequest(method, target, body)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	return req
-}
-
-func newContext(r *http.Request, w http.ResponseWriter) echo.Context {
-	e := echo.New()
-	return e.NewContext(r, w)
 }
 
 func assertResponse(t *testing.T, res *http.Response, code int, goldenFilePath string) {
