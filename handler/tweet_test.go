@@ -90,3 +90,41 @@ func TestNewTweets_ツイートを新規作成できること(t *testing.T) {
 		tearDown()
 	}
 }
+func TestLike_ツイートをLikeできること(t *testing.T) {
+
+	type expected struct {
+		httpStatusCode int
+		goldenFilePath string
+	}
+
+	testcases := []struct {
+		name          string
+		targetTweetID uint
+		expected      expected
+	}{
+		{
+			name:          "Like成功",
+			targetTweetID: 1,
+			expected: expected{
+				httpStatusCode: http.StatusOK,
+				goldenFilePath: "./testdata/tweet/like/success.golden",
+			},
+		},
+	}
+
+	for _, tc := range testcases {
+		setup()
+
+		t.Run(tc.name, func(t *testing.T) {
+			target := fmt.Sprintf("/api/v1/tweets/%v/like", tc.targetTweetID)
+			req := newRequest(http.MethodPut, target, nil)
+			rec := httptest.NewRecorder()
+
+			e.ServeHTTP(rec, req)
+
+			assertResponse(t, rec.Result(), tc.expected.httpStatusCode, tc.expected.goldenFilePath)
+		})
+
+		tearDown()
+	}
+}
