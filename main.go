@@ -1,6 +1,6 @@
 package main
 
-//go:generate sqlboiler --wipe --no-tests mysql
+//go:generate sqlboiler --wipe --no-tests mysql --no-auto-timestamps
 
 import (
 	"context"

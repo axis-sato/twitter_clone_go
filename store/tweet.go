@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/c8112002/twitter_clone_go/utils"
+
 	"github.com/volatiletech/sqlboiler/boil"
 
 	"github.com/volatiletech/sqlboiler/queries/qm"
@@ -84,6 +86,8 @@ func (ts *TweetStore) CreateTweet(tweet string, userID uint) (*entities.Tweet, e
 	var m models.Tweet
 	m.Tweet = tweet
 	m.UserID = userID
+	m.CreatedAt = utils.Now()
+	m.UpdatedAt = utils.Now()
 	err := m.Insert(ts.ctx, ts.db, boil.Infer())
 	if err != nil {
 		return nil, err

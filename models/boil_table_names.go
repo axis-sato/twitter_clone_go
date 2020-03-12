@@ -5,13 +5,13 @@ package models
 
 var TableNames = struct {
 	Follows        string
-	GooseDBVersion string
+	GorpMigrations string
 	Likes          string
 	Tweets         string
 	Users          string
 }{
 	Follows:        "follows",
-	GooseDBVersion: "goose_db_version",
+	GorpMigrations: "gorp_migrations",
 	Likes:          "likes",
 	Tweets:         "tweets",
 	Users:          "users",

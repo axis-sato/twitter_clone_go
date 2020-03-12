@@ -722,13 +722,6 @@ func (o *Like) Insert(ctx context.Context, exec boil.ContextExecutor, columns bo
 	}
 
 	var err error
-	if !boil.TimestampsAreSkipped(ctx) {
-		currTime := time.Now().In(boil.GetLocation())
-
-		if o.CreatedAt.IsZero() {
-			o.CreatedAt = currTime
-		}
-	}
 
 	if err := o.doBeforeInsertHooks(ctx, exec); err != nil {
 		return err
@@ -836,9 +829,6 @@ func (o *Like) Update(ctx context.Context, exec boil.ContextExecutor, columns bo
 			likePrimaryKeyColumns,
 		)
 
-		if !columns.IsWhitelist() {
-			wl = strmangle.SetComplement(wl, []string{"created_at"})
-		}
 		if len(wl) == 0 {
 			return 0, errors.New("models: unable to update likes, could not build whitelist")
 		}
@@ -952,13 +942,6 @@ var mySQLLikeUniqueColumns = []string{}
 func (o *Like) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
 		return errors.New("models: no likes provided for upsert")
-	}
-	if !boil.TimestampsAreSkipped(ctx) {
-		currTime := time.Now().In(boil.GetLocation())
-
-		if o.CreatedAt.IsZero() {
-			o.CreatedAt = currTime
-		}
 	}
 
 	if err := o.doBeforeUpsertHooks(ctx, exec); err != nil {
