@@ -105,6 +105,7 @@ func (ts *TweetStore) Like(t *entities.Tweet, userID uint) (*entities.Tweet, err
 	var like models.Like
 	like.TweetID = t.ID
 	like.UserID = userID
+	like.CreatedAt = utils.Now()
 	err := like.Insert(ts.ctx, ts.db, boil.Infer())
 	if err != nil {
 		return nil, err
