@@ -148,11 +148,6 @@ func loadUsers() error {
 }
 
 func loadTweets() error {
-	tx, err := d.BeginTx(ctx, nil)
-	if err != nil {
-		return err
-	}
-
 	nt := 40
 	nu := 5
 
@@ -174,12 +169,28 @@ func loadTweets() error {
 			DeletedAt: deletedAt,
 		}
 
-		if err := t.Insert(ctx, tx, boil.Infer()); err != nil {
+		if err := t.Insert(ctx, d, boil.Infer()); err != nil {
 			return err
+		}
+
+		if tid%2 == 0 {
+			// IDが偶数のツイートはID=1のユーザにlikeされている状態にする
+			if err := like(t); err != nil {
+				return err
+			}
 		}
 	}
 
-	if err := tx.Commit(); err != nil {
+	return nil
+}
+
+func like(to models.Tweet) error {
+	like := models.Like{
+		UserID:    1,
+		CreatedAt: utils.Now(),
+	}
+
+	if err := to.AddLikes(ctx, d, true, &like); err != nil {
 		return err
 	}
 

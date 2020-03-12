@@ -12,8 +12,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 29,
@@ -42,8 +42,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 27,
@@ -72,8 +72,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 25,
@@ -102,8 +102,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 23,
@@ -132,8 +132,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 21,
@@ -162,8 +162,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 19,
@@ -192,8 +192,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 17,
@@ -222,8 +222,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 15,
@@ -252,8 +252,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 13,
@@ -282,8 +282,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 11,
@@ -312,8 +312,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 9,
@@ -342,8 +342,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 7,
@@ -372,8 +372,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 5,
@@ -402,8 +402,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 3,
@@ -432,8 +432,8 @@
         "is_follower": false,
         "followee_count": 0
       },
-      "like": 0,
-      "is_liked": false
+      "like": 1,
+      "is_liked": true
     },
     {
       "id": 1,
