@@ -1,0 +1,15 @@
+{
+  "id": 2,
+  "tweet": "ツイート 2",
+  "created_at": "2020-01-01T00:00:00+09:00",
+  "user": {
+    "id": 2,
+    "name": "佐藤 二郎",
+    "icon": "https://icon/2",
+    "profile": "こんにちは。佐藤二郎です。",
+    "is_follower": false,
+    "followee_count": 0
+  },
+  "like": 0,
+  "is_liked": false
+}

@@ -7,6 +7,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/volatiletech/sqlboiler/queries/qm"
+
 	"github.com/stretchr/testify/assert"
 
 	"github.com/c8112002/twitter_clone_go/models"
@@ -90,6 +92,7 @@ func TestNewTweets_ツイートを新規作成できること(t *testing.T) {
 		tearDown()
 	}
 }
+
 func TestLike_ツイートをLikeできること(t *testing.T) {
 
 	type expected struct {
@@ -123,8 +126,63 @@ func TestLike_ツイートをLikeできること(t *testing.T) {
 			e.ServeHTTP(rec, req)
 
 			assertResponse(t, rec.Result(), tc.expected.httpStatusCode, tc.expected.goldenFilePath)
+
+			c, _ := models.Likes(
+				qm.Where("user_id=?", 1),
+				qm.Where("tweet_id=?", tc.targetTweetID),
+			).Count(ctx, d)
+
+			assert.Equal(t, 1, int(c))
 		})
 
 		tearDown()
 	}
+
+}
+
+func TestUnlike_ツイートをUnlikeできること(t *testing.T) {
+
+	type expected struct {
+		httpStatusCode int
+		goldenFilePath string
+	}
+
+	testcases := []struct {
+		name          string
+		targetTweetID uint
+		expected      expected
+	}{
+		{
+			name:          "UnLike成功",
+			targetTweetID: 2,
+			expected: expected{
+				httpStatusCode: http.StatusOK,
+				goldenFilePath: "./testdata/tweet/unlike/success.golden",
+			},
+		},
+	}
+
+	for _, tc := range testcases {
+		setup()
+
+		t.Run(tc.name, func(t *testing.T) {
+			target := fmt.Sprintf("/api/v1/tweets/%v/unlike", tc.targetTweetID)
+			req := newRequest(http.MethodPut, target, nil)
+			rec := httptest.NewRecorder()
+
+			e.ServeHTTP(rec, req)
+
+			assertResponse(t, rec.Result(), tc.expected.httpStatusCode, tc.expected.goldenFilePath)
+
+			c, _ := models.Likes(
+				qm.Where("user_id=?", 1),
+				qm.Where("tweet_id=?", tc.targetTweetID),
+			).Count(ctx, d)
+
+			assert.Equal(t, 0, int(c))
+		})
+
+		tearDown()
+	}
+
 }
