@@ -34,6 +34,7 @@ import (
 )
 
 var (
+	e      *echo.Echo
 	h      *Handler
 	d      *sql.DB
 	us     *store.UserStore
@@ -56,7 +57,9 @@ func setup() {
 	us = store.NewUserStore(d, ctx)
 	ts = store.NewTweetStore(d, ctx)
 
+	e = router.New()
 	h = NewHandler(us, ts)
+	h.Register(e)
 
 	if err := db.MigrateTestDB(d); err != nil {
 		panic(err.Error())
@@ -158,9 +161,9 @@ func loadTweets() error {
 
 		var deletedAt null.Time
 		if tid <= 30 {
-			deletedAt = null.NewTime(time.Now(), false)
+			deletedAt = null.NewTime(utils.Now(), false)
 		} else {
-			deletedAt = null.NewTime(time.Now(), true)
+			deletedAt = null.NewTime(utils.Now(), true)
 		}
 
 		t := models.Tweet{
