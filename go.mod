@@ -13,6 +13,7 @@ require (
 	github.com/denisenkom/go-mssqldb v0.0.0-20200206145737-bbfc9a55622e // indirect
 	github.com/edsrzf/mmap-go v1.0.0 // indirect
 	github.com/friendsofgo/errors v0.9.2
+	github.com/go-playground/assert/v2 v2.0.1
 	github.com/go-playground/validator/v10 v10.2.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gocql/gocql v0.0.0-20200228163523-cd4b606dd2fb // indirect
@@ -23,6 +24,7 @@ require (
 	github.com/jessevdk/go-assets v0.0.0-20160921144138-4f4301a06e15 // indirect
 	github.com/klauspost/compress v1.10.2 // indirect
 	github.com/labstack/echo/v4 v4.1.13
+	github.com/magiconair/properties v1.8.1
 	github.com/mattn/go-gimei v0.0.0-20190131075016-6a4b8c0a2634
 	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/mattn/go-oci8 v0.0.4 // indirect

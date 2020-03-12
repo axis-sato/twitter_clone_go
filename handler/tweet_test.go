@@ -6,6 +6,10 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/c8112002/twitter_clone_go/models"
 )
 
 func TestTweets_ツイート一覧が取得できること(t *testing.T) {
@@ -36,12 +40,11 @@ func TestTweets_ツイート一覧が取得できること(t *testing.T) {
 }
 
 func TestNewTweets_ツイートを新規作成できること(t *testing.T) {
-	setup()
-	defer tearDown()
 
 	type expected struct {
 		httpStatusCode int
 		goldenFilePath string
+		tweetCount     int
 	}
 
 	testcases := []struct {
@@ -55,6 +58,7 @@ func TestNewTweets_ツイートを新規作成できること(t *testing.T) {
 			expected: expected{
 				httpStatusCode: http.StatusOK,
 				goldenFilePath: "./testdata/tweet/new_tweet/success.golden",
+				tweetCount:     41,
 			},
 		},
 		{
@@ -63,11 +67,14 @@ func TestNewTweets_ツイートを新規作成できること(t *testing.T) {
 			expected: expected{
 				httpStatusCode: http.StatusBadRequest,
 				goldenFilePath: "./testdata/tweet/new_tweet/validation_error.golden",
+				tweetCount:     40,
 			},
 		},
 	}
 
 	for _, tc := range testcases {
+		setup()
+
 		t.Run(tc.name, func(t *testing.T) {
 			req := newRequest(http.MethodPost, "/api/v1/tweets", strings.NewReader(tc.body))
 			rec := httptest.NewRecorder()
@@ -75,6 +82,11 @@ func TestNewTweets_ツイートを新規作成できること(t *testing.T) {
 			e.ServeHTTP(rec, req)
 
 			assertResponse(t, rec.Result(), tc.expected.httpStatusCode, tc.expected.goldenFilePath)
+
+			count, _ := models.Tweets().Count(ctx, d)
+			assert.Equal(t, tc.expected.tweetCount, int(count))
 		})
+
+		tearDown()
 	}
 }
