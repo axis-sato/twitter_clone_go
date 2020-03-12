@@ -186,11 +186,6 @@ func loadTweets() error {
 	return nil
 }
 
-func newEchoContext(r *http.Request, w http.ResponseWriter) echo.Context {
-	e := router.New()
-	return e.NewContext(r, w)
-}
-
 func newRequest(method, target string, body io.Reader) *http.Request {
 	req := httptest.NewRequest(method, target, body)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)

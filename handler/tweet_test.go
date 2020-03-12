@@ -6,8 +6,6 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestTweets_ツイート一覧が取得できること(t *testing.T) {
@@ -29,9 +27,9 @@ func TestTweets_ツイート一覧が取得できること(t *testing.T) {
 			target := fmt.Sprintf("%v?%v", "/api/v1/tweets", tc.query)
 			req := newRequest(http.MethodGet, target, nil)
 			rec := httptest.NewRecorder()
-			c := newEchoContext(req, rec)
 
-			assert.NoError(t, h.Tweets(c))
+			e.ServeHTTP(rec, req)
+
 			assertResponse(t, rec.Result(), http.StatusOK, tc.goldenFilePath)
 		})
 	}

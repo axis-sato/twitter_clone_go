@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestUsers_ユーザ一覧が取得できること(t *testing.T) {
@@ -28,9 +26,9 @@ func TestUsers_ユーザ一覧が取得できること(t *testing.T) {
 			target := fmt.Sprintf("%v?%v", "/api/v1/users", tc.query)
 			req := newRequest(http.MethodGet, target, nil)
 			rec := httptest.NewRecorder()
-			c := newEchoContext(req, rec)
 
-			assert.NoError(t, h.Users(c))
+			e.ServeHTTP(rec, req)
+
 			assertResponse(t, rec.Result(), http.StatusOK, tc.goldenFilePath)
 		})
 	}
